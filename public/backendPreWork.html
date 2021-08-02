@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <title>MoonTrade</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script defer src="/__/firebase/8.3.1/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.3.1/firebase-database.js"></script>
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+</head>
+<body>
+
+    <h1>Live Price Data</h1>
+    <p>Btc</p>
+    <p id="btc">--</p>
+    
+    <p>Eth</p>
+    <p id="eth">--</p>
+    <button onclick="buyEth()">Buy</button>
+    <div class="field">
+        <label class="label">Amount</label>
+        <div class="control">
+            <input class="input is-small" type="text" id="buyAmount">
+        </div>
+    </div>
+    
+    <p>Bnb</p>
+    <p id="bnb">--</p>
+  
+
+    <br><br>
+    <h1>Portfolio</h1>
+    <p id="value">--</p>
+    <br>
+    <p>Invested:</p>
+    <p id="invested">--</p>
+    <p>Cash:</p>
+    <p id="cash">--</p>
+    <br>
+    <h1>Positions</h1>
+    <!-- Note cards will render here -->
+    <div id="app" class="columns is-multiline"></div>
+
+
+
+  <script src="js/script.js"></script>
+</body>
+</html>
+

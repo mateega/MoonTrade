@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MoonTrade | Portfolio</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script defer src="/__/firebase/8.3.1/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.3.1/firebase-database.js"></script>
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+</head>
+
+<body>
+
+    <!-- Heading -->
+    <section class="hero is-small is-link has-text-centered">
+      <div class="hero-body">
+        <p class="title">
+          MoonTrade
+        </p>
+        <p class="subtitle">
+          Portfolio
+        </p>
+      </div>
+    </section>
+
+    <!-- Navbar -->
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <p class = "navbar-item card-header-title">
+                    MoonTrade
+                </p>
+            <a class="navbar-item" href="/index.html">
+                Portfolio
+            </a>
+
+            <a class="navbar-item" href="/search.html">
+                Search
+            </a>
+            </div>
+
+            <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                <a class="button is-link" href="signin.html">
+                    <strong>Sign out</strong>
+                </a>
+                </div>
+            </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Data Visuals -->
+    <div class="columns">
+        <div class="column m-5">
+            <p class="title is-1" id="value">
+                $---,---
+            </p>
+            <p class="subtitle is-3" id="gain">
+                +---.-- (+-.--%) Today
+            </p>
+        </div>
+        <div class="column m-5">
+            <!-- Pie Chart-->
+            <div id="piechart"></div>
+            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        </div>
+        <div class="column m-5">
+            <p class="subtitle is-5">Invested:</p>
+            <p class="subtitle is-5" id="invested">
+                ---
+            </p>
+            <p class="subtitle is-5">Cash:</p>
+            <p class="subtitle is-5" id="cash">
+                ---
+            </p>
+        </div>
+    </div>
+
+    <!-- Coins Owned and Live Chat -->
+    <div class="columns">
+        <!-- Coins Owned -->
+        <div class="column auto">
+            <div class="card m-5">
+                <header class="card-header">
+                    <p class="card-header-title is-size-5">
+                    Current Positions
+                    </p>
+                </header>
+                <div id="app"></div> <!-- positions will render here -->
+            </div>
+        </div>
+        <!-- Live Chat -->
+        <div class="column is-one-third">
+            <div class="card live-chat is-centered">
+                <header class="card-header">
+                    <p class="card-header-title is-size-5">
+                    Live Chat
+                    </p>
+                </header>
+                <textarea class="textarea m-2" placeholder="Chat Placeholder"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order History -->
+    <div class="columns">
+        <div class="column auto">
+            <div class="card m-5">
+                <header class="card-header">
+                    <p class="card-header-title is-size-5">
+                    Order History
+                    </p>
+                </header>
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title ">
+                        BTC
+                        </p>
+                        <p class="card-header-title ">
+                        $40,000
+                        </p>
+                        <p class="card-header-title ">
+                        # of shares
+                        </p>
+                        <p class="card-header-title ">
+                        Day % Change
+                        </p>
+                        <p class="card-header-title ">
+                        Volume
+                        </p>
+                    </header>
+                </div>
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title ">
+                        BTC
+                        </p>
+                        <p class="card-header-title ">
+                        $40,000
+                        </p>
+                        <p class="card-header-title ">
+                        # of shares
+                        </p>
+                        <p class="card-header-title ">
+                        Day % Change
+                        </p>
+                        <p class="card-header-title ">
+                        Volume
+                        </p>
+                    </header>
+                </div>
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title ">
+                        BTC
+                        </p>
+                        <p class="card-header-title ">
+                        $40,000
+                        </p>
+                        <p class="card-header-title ">
+                        # of shares
+                        </p>
+                        <p class="card-header-title ">
+                        Day % Change
+                        </p>
+                        <p class="card-header-title ">
+                        Volume
+                        </p>
+                    </header>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Price Data-->
+    <h1>Live Price Data</h1>
+    <p>Btc</p>
+    <p id="btc">--</p>
+    <p>Eth</p>
+    <p id="eth">--</p>
+    <button onclick="buyEth()">Buy</button>
+    <div class="field">
+        <label class="label">Amount</label>
+        <div class="control">
+            <input class="input is-small" type="text" id="buyAmount">
+        </div>
+    </div>
+    <p>Bnb</p>
+    <p id="bnb">--</p>
+
+    <script src="js/script.js" type="text/javascript" defer></script>
+</body>
+
+
+
+</html>
