@@ -8,6 +8,12 @@
   <title>MoonTrade Search Page</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
   <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+   <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script defer src="/__/firebase/8.3.1/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.3.1/firebase-database.js"></script>
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
 </head>
 
 <body>
@@ -61,8 +67,9 @@
         </div>
     </nav>
 
+    <!-- Search bar -->
     <div class="container">
-        <input id="search" class="input is-primary" type="text" placeholder="Search">
+        <input id="search" class="input is-primary" type="text" placeholder="Search" onKeyUp="startSearch()">
     </div>
 
     <div class = "columns">
@@ -179,6 +186,7 @@
         
         </div>
 
+        <!-- Search -->
         <div class = "column auto">
             <div class = "columns">
                 <div class="column"> 
@@ -188,6 +196,7 @@
                             Search Results
                             </p>
                         </header>
+                        <div id="results">
                         <div class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
@@ -235,6 +244,7 @@
                                 Add
                                 </button>
                             </header>
+                        </div>
                         </div>
                     </div>
                 
