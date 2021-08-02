@@ -319,3 +319,39 @@ const updateCurrentPosition = (newPrice, newAmount) => {
         }
     }
 }
+
+const startSearch = () => {
+    const searchRef = firebase.database().ref();
+    searchRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        findCoin(data);
+    });
+};
+
+const findCoin = (coins) => {
+    console.log("finding coin");
+    const results = document.querySelector('#results');
+    results.innerHTML = "";
+    for(coinElement in coins) {
+        const coinData = coins[coinElement];
+        const searchInput = document.querySelector('#search').value;
+        if (searchInput.toUpperCase() === coinData.coin.toUpperCase()){
+            results.innerHTML += `<div class="card">
+                            <header class="card-header">
+                                <p class="card-header-title ">
+                                ${coinData.coin}
+                                </p>
+                                <p class="card-header-title ">
+                                ${coinData.price}
+                                </p>
+                                <button class="card-header-icon" aria-label="more options">
+                                Buy
+                                </button>
+                                <button class="card-header-icon" aria-label="more options">
+                                Add
+                                </button>
+                            </header>
+                        </div>`;
+        }
+    }
+};
