@@ -11,3 +11,18 @@ window.onload = (event) => {
     }
   });
 };
+
+const handleOrderSubmit = () => {
+  // 1. Capture the form data
+  const coin = document.querySelector('#noteTitle');
+  // 2. Format the data and write it to our database
+  firebase.database().ref(`users/${googleUser.uid}`).push({
+    title: noteTitle.value,
+    text: noteText.value
+  })
+  // 3. Clear the form so that we can write a new note
+  .then(() => {
+    noteTitle.value = "";
+    noteText.value = "";
+  });
+};
