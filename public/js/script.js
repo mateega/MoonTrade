@@ -354,26 +354,28 @@ const createPieChart = (invested, cash) => {
 
 // -------- USE FOR SEARCH PAGE --------------------------------------------------------------
 // -------- BUY POSITIONS --------------------------------------------------------------------
-const buyEth = () => {
-    const buyAmount = document.querySelector('#buyAmount').value;
+const buyEth = (coinName) => {
+    const buyAmount = prompt("How many coins would you like to buy?");
+    console.log("running");
     const lotSize = parseFloat(buyAmount);
+    const coinPrice = getPrice(coinName);
     
     console.log({
-    price: ethPrice,
+    price: coinPrice,
     amount: lotSize
     }); 
 
-    if (tickers.includes("ETH")){ //see if there is a current position in ETH
+    if (tickers.includes(coinName)){ //see if there is a current position
         console.log("you already have a position in this crypto.");
         //update the current position
-        updateCurrentPosition(ethPrice, lotSize);
+        updateCurrentPosition(coinPrice, lotSize, coinName);
     }
     else {
         console.log("you are entering a new position.");
         //create a new position in firebase
         firebase.database().ref().push({
-            coin: "ETH",
-            price: ethPrice,
+            coin: coinName,
+            price: coinPrice,
             amount: lotSize,
             buyAmount: lotSize,
             status: "in",
@@ -386,26 +388,45 @@ const buyEth = () => {
 
 
 
-const updateCurrentPosition = (newPrice, newAmount) => {
+const updateCurrentPosition = (newPrice, newAmount, coinName) => {
     for(const positionItem in data) {
         const position = data[positionItem];
         let ticker = position.coin;
         console.log(ticker);
-        if (ticker == "ETH"){
+        if (ticker == coinName){
             console.log("match");
             const oldAmount = parseFloat(position.amount);
-            const oldPrice = parseFloat(position.price)
+            const oldPrice = parseFloat(position.price);
             const positionEdit = {
-                coin: "ETH",
+                coin: coinName,
                 price: ((((oldPrice)*(oldAmount)) + (newPrice*newAmount))/(oldAmount + newAmount)),
                 amount: oldAmount + newAmount,
-                //date: dateToday
+                // buyAmount: newAmount,
+                // status: "in",
+                // direction: "buy",
+                // date: dateToday
             }
             firebase.database().ref(positionItem).update(positionEdit);
         }
     }
+
+    //need to add new data point
+    firebase.database().ref().push({
+        coin: coinName,
+        price: ((((oldPrice)*(oldAmount)) + (newPrice*newAmount))/(oldAmount + newAmount)),
+        amount: oldAmount + newAmount,
+        buyAmount: newAmount,
+        status: "in",
+        direction: "buy",
+        date: dateToday
+    })
 }
 
+// const testing = (name) => {
+//     console.log(NamedNodeMap);
+// }
+
+// search function
 const startSearch = () => {
     const searchInput = document.querySelector('#search').value;
     let url = "https://api.binance.com/api/v1/ticker/24hr";
@@ -419,7 +440,6 @@ const startSearch = () => {
     for(coinElement in myjson) {
         const coinData = myjson[coinElement];
         const ticker = `${searchInput}USDT`;
-        console.log(ticker + coinData.symbol);
         if (ticker === coinData.symbol){
             results.innerHTML += `<div class="card">
                             <header class="card-header">
@@ -427,9 +447,9 @@ const startSearch = () => {
                                 ${searchInput}
                                 </p>
                                 <p class="card-header-title ">
-                                ${getPrice(searchInput)}
+                                $${getPrice(searchInput)}
                                 </p>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="buyEth('${searchInput}')">
                                 Buy
                                 </button>
                                 <button class="card-header-icon" aria-label="more options">
@@ -444,3 +464,45 @@ const startSearch = () => {
       console.log(error); // Log error if there is one
     })
 };
+
+// //buy positions
+// const buyPosition = (desiredPositionItem) => {
+//     const messagesRef = firebase.database().ref();
+//     messagesRef.on('value', (snapshot) => {
+//         data = snapshot.val();
+//         console.log(data);
+//     });
+//     for(const positionItem in data) {
+//         const position = data[positionItem];
+//         if (positionItem == desiredPositionItem){
+//             const amountBuy = prompt("How many coins would you like to buy?");
+//             if (amountBuy > 0 && amountBuy < position.amount){ //to filter out canceled out buy orders
+//                 console.log("user wants to buy part");
+//                 const oldAmount = parseFloat(position.amount);
+//                 const positionEdit = {
+//                     coin: position.coin,
+//                     price: position.price,
+//                     amount: (oldAmount + amountBuy),
+//                 }
+//                 firebase.database().ref(positionItem).update(positionEdit);
+//                 console.log("you are creating a new orderhistory point.");
+//                 //create a new datapoint in firebase
+//                 firebase.database().ref().push({
+//                     coin: position.coin,
+//                     price: getPrice(position.coin),
+//                     buyAmount: position.buyAmount,
+//                     amount: amountBuy,
+//                     status: "out",
+//                     direction: "buy",
+//                     date: dateToday
+//                 })
+//                 updateInvested(); //update the amount invested number shown on screen
+//             }
+//             else {
+//                 console.log("user has cancelled buy order");
+//             }
+//         }
+
+//   };
+
+// }
