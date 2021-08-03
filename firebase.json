@@ -11,6 +11,9 @@
     ]
   },
   "emulators": {
+    "auth": {
+      "port": 8111
+    },
     "hosting": {
       "port": 5000
     },
