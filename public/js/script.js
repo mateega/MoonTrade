@@ -406,5 +406,41 @@ const updateCurrentPosition = (newPrice, newAmount) => {
     }
 }
 
+const startSearch = () => {
+    const searchInput = document.querySelector('#search').value;
+    let url = "https://api.binance.com/api/v1/ticker/24hr";
 
-
+    fetch(url)
+    .then(response => response.json()) // read JSON response
+    .then(myjson => {
+        console.log("finding coin");
+    const results = document.querySelector('#results');
+    results.innerHTML = "";
+    for(coinElement in myjson) {
+        const coinData = myjson[coinElement];
+        const ticker = `${searchInput}USDT`;
+        console.log(ticker + coinData.symbol);
+        if (ticker === coinData.symbol){
+            results.innerHTML += `<div class="card">
+                            <header class="card-header">
+                                <p class="card-header-title ">
+                                ${searchInput}
+                                </p>
+                                <p class="card-header-title ">
+                                ${getPrice(searchInput)}
+                                </p>
+                                <button class="card-header-icon" aria-label="more options">
+                                Buy
+                                </button>
+                                <button class="card-header-icon" aria-label="more options">
+                                Add
+                                </button>
+                            </header>
+                        </div>`;
+        }
+    }
+    })
+    .catch(error => {
+      console.log(error); // Log error if there is one
+    })
+};
