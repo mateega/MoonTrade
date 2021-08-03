@@ -13,34 +13,34 @@ var year = today.getFullYear();
 const dateToday = (month + "/" + day + "/" + year);
 
 // --------- SET UP LIVE PRICE DATA -------------------------------------------------------------------
-let wsEth = new WebSocket('wss://stream.binance.com:9443/ws/ethusdt@trade'); //price data for eth
-let wsBtc = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@trade'); //price data for btc
-let wsBnb = new WebSocket('wss://stream.binance.com:9443/ws/bnbusdt@trade'); //price data for bnb
+// let wsEth = new WebSocket('wss://stream.binance.com:9443/ws/ethusdt@trade'); //price data for eth
+// let wsBtc = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@trade'); //price data for btc
+// let wsBnb = new WebSocket('wss://stream.binance.com:9443/ws/bnbusdt@trade'); //price data for bnb
 
-let ethPriceElement = document.getElementById('eth');
-let btcPriceElement = document.getElementById('btc');
-let bnbPriceElement = document.getElementById('bnb');
+// let ethPriceElement = document.getElementById('eth');
+// let btcPriceElement = document.getElementById('btc');
+// let bnbPriceElement = document.getElementById('bnb');
 
-let ethPrice; //current eth price (to be viewed throughout code)
+// let ethPrice; //current eth price (to be viewed throughout code)
 
-wsEth.onmessage = (event) => {
-  let stockObject = JSON.parse(event.data);
-  let price = stockObject.p;
-  ethPrice = price;
-  ethPriceElement.innerText = price; //set onscreen eth price to the eth price from binance
-}
+// wsEth.onmessage = (event) => {
+//   let stockObject = JSON.parse(event.data);
+//   let price = stockObject.p;
+//   ethPrice = price;
+//   ethPriceElement.innerText = price; //set onscreen eth price to the eth price from binance
+// }
 
-wsBtc.onmessage = (event) => {
-  let stockObject = JSON.parse(event.data);
-  let price = stockObject.p;
-  btcPriceElement.innerText = price; //set onscreen btc price to the btc price from binance
-}
+// wsBtc.onmessage = (event) => {
+//   let stockObject = JSON.parse(event.data);
+//   let price = stockObject.p;
+//   btcPriceElement.innerText = price; //set onscreen btc price to the btc price from binance
+// }
 
-wsBnb.onmessage = (event) => {
-  let stockObject = JSON.parse(event.data);
-  let price = stockObject.p;
-  bnbPriceElement.innerText = price;
-}
+// wsBnb.onmessage = (event) => {
+//   let stockObject = JSON.parse(event.data);
+//   let price = stockObject.p;
+//   bnbPriceElement.innerText = price;
+// }
 
 // ----- GET PRICE OF A CRYPTO -------------------------------------------
 let wantedPrice = 0.0;
@@ -96,8 +96,6 @@ const sellPosition = (desiredPositionItem) => {
                 console.log("user wants to sell part");
                 const oldAmount = parseFloat(position.amount);
                 const positionEdit = {
-                    coin: position.coin,
-                    price: position.price,
                     amount: (oldAmount - amountSell),
                 }
                 firebase.database().ref(positionItem).update(positionEdit);
@@ -105,9 +103,10 @@ const sellPosition = (desiredPositionItem) => {
                 //create a new datapoint in firebase
                 firebase.database().ref().push({
                     coin: position.coin,
-                    price: getPrice(position.coin),
-                    buyAmount: position.buyAmount,
+                    price: position.price,
+                    sellPrice: getPrice(position.coin),
                     amount: amountSell,
+                    buyAmount: position.buyAmount,
                     status: "out",
                     direction: "sell",
                     date: dateToday
@@ -123,7 +122,8 @@ const sellPosition = (desiredPositionItem) => {
                 firebase.database().ref(positionItem).update(positionEdit);
                 firebase.database().ref().push({
                     coin: position.coin,
-                    price: getPrice(position.coin),
+                    price: position.price,
+                    sellPrice: getPrice(position.coin),
                     amount: amountSell,
                     buyAmount: position.buyAmount,
                     status: "out",
@@ -190,7 +190,11 @@ const renderDataAsHtml = (data) => {
             porfolioValue += positionValue;
             porfolioWorth += ((position.amount)*(getPrice(position.coin)));
         }
+        if (position.status == "out" && position.direction == "sell") { //if "out"
+            porfolioWorth += ((position.amount)*(position.sellPrice) - (position.amount)*(position.price));//add in buy price
+        }
         orderHistory += createOrder(position, positionItem) // For each position create an HTML card
+        
   };
   document.querySelector('#app').innerHTML = cards;
   document.querySelector('#appHistory').innerHTML = orderHistory;
@@ -241,30 +245,45 @@ const createCard = (position, positionItem) => {
 
 const createOrder = (position, positionItem) => {
     let innerHTML = "";
+    
+    // innerHTML += `<div class="card">`
+    // innerHTML += `<header class="card-header" >`
+    // innerHTML += `<p class="card-header-title" >`
+    // innerHTML += `${position.date}`
+    // innerHTML += `</p>`
+    // innerHTML += `<p class="card-header-title" >`
+    // innerHTML += `${position.coin}`
+    // innerHTML += `</p>`
+    // innerHTML += `<p class="card-header-title" >`
+    // innerHTML += `${position.direction}`
+    // innerHTML += `</p>`
+    // innerHTML += `<p class="card-header-title" >`
+    // let shownAmount = position.amount
+    // if (position.status == "in"){shownAmount = position.buyAmount;}
+    // innerHTML += `${shownAmount}`
+    // innerHTML += `</p>`
+    // innerHTML += `<p class="card-header-title" >`
+    // innerHTML += `${usCurrencyFormat.format(position.price)}`
+    // innerHTML += `</p>`
+    // innerHTML += `<p class="card-header-title" >`
+    // innerHTML += `${usCurrencyFormat.format(shownAmount*(position.price))}`
+    // innerHTML += `</p>`
+    // innerHTML += `</header>`
+    // innerHTML += `</div>`    
+
     innerHTML += `<div class="card">`
-    innerHTML += `<header class="card-header">`
-    innerHTML += `<p class="card-header-title ">`
-    innerHTML += `${position.date}`
-    innerHTML += `</p>`
-    innerHTML += `<p class="card-header-title ">`
-    innerHTML += `${position.coin}`
-    innerHTML += `</p>`
-    innerHTML += `<p class="card-header-title ">`
-    innerHTML += `${position.direction}`
-    innerHTML += `</p>`
-    innerHTML += `<p class="card-header-title ">`
+    innerHTML += `<div class="columns" >`
+    innerHTML += `<div class="column is-2"><p class="my-3 mx-4"><b>${position.date}</b></p></div>`
+    innerHTML += `<div class="column is-2"><p class="my-3 mx-4">${position.coin}</p></div>`
+    innerHTML += `<div class="column is-2"><p class="my-3 mx-4">${position.direction}</p></div>`
     let shownAmount = position.amount
     if (position.status == "in"){shownAmount = position.buyAmount;}
-    innerHTML += `${shownAmount}`
-    innerHTML += `</p>`
-    innerHTML += `<p class="card-header-title ">`
-    innerHTML += `${usCurrencyFormat.format(position.price)}`
-    innerHTML += `</p>`
-    innerHTML += `<p class="card-header-title ">`
-    innerHTML += `${usCurrencyFormat.format(shownAmount*(position.price))}`
-    innerHTML += `</p>`
-    innerHTML += `</header>`
-    innerHTML += `</div>`    
+    innerHTML += `<div class="column is-2"><p class="my-3 mx-4">${shownAmount}</p></div>`
+    innerHTML += `<div class="column is-2"><p class="my-3 mx-4">${usCurrencyFormat.format(position.price)}</p></div>`
+    innerHTML += `<div class="column is-2"><p class="my-3 mx-4"><b>${usCurrencyFormat.format(shownAmount*(position.price))}</b></p></div>`
+    innerHTML += `</div>`
+    innerHTML += `</div>`
+
     return innerHTML;
 }
 
@@ -310,7 +329,10 @@ const updateInvested = () => {
             let positionValue = (position.amount)*(position.price);
             porfolioValue += positionValue;
             porfolioWorth += ((position.amount)*(getPrice(position.coin)));
-        } 
+        }
+        if (position.status == "out" && position.direction == "sell") { //if "out"
+            porfolioWorth += ((position.amount)*(position.sellPrice) - (position.amount)*(position.price));
+        }
     };
     console.log("NEW PORTFOLIO VALUE");
     console.log(porfolioValue);
@@ -344,7 +366,8 @@ const createPieChart = (invested, cash) => {
             ['Invested', invested],
             ['Cash', cash]
         ]);
-        var options = {'legend': 'none'}; //remove legend
+        var options = {'legend': 'none', 'width': 140, 'height': 160,
+        'chartArea': {'width': '100%', 'height': '80%'}}; 
         // Display the chart inside the <div> element with id="piechart"
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
         chart.draw(data, options);

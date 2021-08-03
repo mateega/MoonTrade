@@ -68,28 +68,23 @@
     </nav>
     <!-- Data Visuals -->
     <div class="columns">
-        <div class="column m-5">
+        <div class="column is-3 m-5">
             <p class="title is-1" id="value">
                 $---,---
             </p>
-            <p class="subtitle is-3" id="gain">
+            <p class="subtitle is-4" id="gain">
                 +---.-- (+-.--%) Today
             </p>
         </div>
-        <div class="column m-5">
-            <!-- Pie Chart-->
-            <div id="piechart"></div>
+        <div class="column is-2">
+            <div id="piechart"></div> <!-- Pie Chart loads here -->
             <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         </div>
-        <div class="column m-5">
-            <p class="subtitle is-5">Invested:</p>
-            <p class="subtitle is-5" id="invested">
-                ---
-            </p>
-            <p class="subtitle is-5">Cash:</p>
-            <p class="subtitle is-5" id="cash">
-                ---
-            </p>
+        <div class="column mt-6 is-2">
+            <!--<p class="subtitle is-5"><b>Invested:</b></p>-->
+            <p class="subtitle is-5" id="invested">---</p>
+            <!--<p class="subtitle is-5"><b>Cash:</b></p>-->
+            <p class="subtitle is-5" id="cash">---</p>
         </div>
     </div>
 
@@ -135,7 +130,8 @@
         </div>
     </div>
 
-    <!-- Live Price Data-->
+    <!-- Live Price Data for Testing -->
+    <!--
     <h1>Live Price Data</h1>
     <p>Btc</p>
     <p id="btc">--</p>
@@ -150,6 +146,7 @@
     </div>
     <p>Bnb</p>
     <p id="bnb">--</p>
+    -->
 
     <script src="js/script.js" type="text/javascript" defer></script>
 </body>
