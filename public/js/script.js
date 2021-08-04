@@ -222,55 +222,11 @@ const createCard = (position, positionItem) => {
     innerHTML += `</button>`
     innerHTML += `</header>`
     innerHTML += `</div>`
-  
-//   innerHTML += `<div class="column is-one-quarter">`
-//   innerHTML += `<div class="card">`
-//   innerHTML += `<header class="card-header">`
-//   innerHTML += `<p class="card-header-title">`
-//   innerHTML += `${position.coin} (${position.amount})`
-//   innerHTML += `</p>`
-//   innerHTML += `<p class="card-header-title">`
-//   let gain = (((position.amount)*(getPrice(position.coin))) - (position.amount)*((position.price)));
-//   let gainSymbol = "";
-//   if (gain >= 0){
-//     gainSymbol = "+";
-//   }
-//   innerHTML += `${usCurrencyFormat.format((position.amount)*(getPrice(position.coin)))} (${gainSymbol + usCurrencyFormat.format(gain)})`
-//   innerHTML += `</p>`
-//   innerHTML += `</header>`
-//   innerHTML += `</div>`
-//   innerHTML += `</div>`
     return innerHTML;
 };
 
 const createOrder = (position, positionItem) => {
     let innerHTML = "";
-    
-    // innerHTML += `<div class="card">`
-    // innerHTML += `<header class="card-header" >`
-    // innerHTML += `<p class="card-header-title" >`
-    // innerHTML += `${position.date}`
-    // innerHTML += `</p>`
-    // innerHTML += `<p class="card-header-title" >`
-    // innerHTML += `${position.coin}`
-    // innerHTML += `</p>`
-    // innerHTML += `<p class="card-header-title" >`
-    // innerHTML += `${position.direction}`
-    // innerHTML += `</p>`
-    // innerHTML += `<p class="card-header-title" >`
-    // let shownAmount = position.amount
-    // if (position.status == "in"){shownAmount = position.buyAmount;}
-    // innerHTML += `${shownAmount}`
-    // innerHTML += `</p>`
-    // innerHTML += `<p class="card-header-title" >`
-    // innerHTML += `${usCurrencyFormat.format(position.price)}`
-    // innerHTML += `</p>`
-    // innerHTML += `<p class="card-header-title" >`
-    // innerHTML += `${usCurrencyFormat.format(shownAmount*(position.price))}`
-    // innerHTML += `</p>`
-    // innerHTML += `</header>`
-    // innerHTML += `</div>`    
-
     innerHTML += `<div class="card">`
     innerHTML += `<div class="columns" >`
     innerHTML += `<div class="column is-2"><p class="my-3 mx-4"><b>${position.date}</b></p></div>`
@@ -283,7 +239,6 @@ const createOrder = (position, positionItem) => {
     innerHTML += `<div class="column is-2"><p class="my-3 mx-4"><b>${usCurrencyFormat.format(shownAmount*(position.price))}</b></p></div>`
     innerHTML += `</div>`
     innerHTML += `</div>`
-
     return innerHTML;
 }
 
