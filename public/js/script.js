@@ -369,6 +369,16 @@ const buyEth = (coinName) => {
         console.log("you already have a position in this crypto.");
         //update the current position
         updateCurrentPosition(coinPrice, lotSize, coinName);
+        //need to add new data point
+        // firebase.database().ref().push({
+        //     coin: coinName,
+        //     price: ((((parseFloat(position.price))*(parseFloat(position.amount))) + (newPrice*newAmount))/(parseFloat(position.amount) + newAmount)),
+        //     amount: parseFloat(position.amount) + newAmount,
+        //     buyAmount: newAmount,
+        //     status: "in",
+        //     direction: "buy",
+        //     date: dateToday
+        // })
     }
     else {
         console.log("you are entering a new position.");
@@ -389,6 +399,7 @@ const buyEth = (coinName) => {
 
 
 const updateCurrentPosition = (newPrice, newAmount, coinName) => {
+    let count = 0;
     for(const positionItem in data) {
         const position = data[positionItem];
         let ticker = position.coin;
@@ -406,20 +417,30 @@ const updateCurrentPosition = (newPrice, newAmount, coinName) => {
                 // direction: "buy",
                 // date: dateToday
             }
+            if (count < 1){
+                firebase.database().ref().push({
+                    coin: coinName,
+                    price: ((((oldPrice)*(oldAmount)) + (newPrice*newAmount))/(oldAmount + newAmount)),
+                    amount: oldAmount + newAmount,
+                    buyAmount: newAmount,
+                    status: "in",
+                    direction: "buy",
+                    date: dateToday
+                })
+                count++;
+            }
             firebase.database().ref(positionItem).update(positionEdit);
         }
     }
-
-    //need to add new data point
-    firebase.database().ref().push({
-        coin: coinName,
-        price: ((((oldPrice)*(oldAmount)) + (newPrice*newAmount))/(oldAmount + newAmount)),
-        amount: oldAmount + newAmount,
-        buyAmount: newAmount,
-        status: "in",
-        direction: "buy",
-        date: dateToday
-    })
+    // firebase.database().ref().push({
+    //     coin: coinName,
+    //     price: ((((parseFloat(position.price))*(parseFloat(position.amount))) + (newPrice*newAmount))/(parseFloat(position.amount) + newAmount)),
+    //     amount: parseFloat(position.amount) + newAmount,
+    //     buyAmount: newAmount,
+    //     status: "in",
+    //     direction: "buy",
+    //     date: dateToday
+    // })
 }
 
 // const testing = (name) => {
