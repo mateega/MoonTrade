@@ -1,0 +1,10 @@
+[33m67a7ca2[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{0}: pull origin main: Fast-forward
+[33m0366d18[m HEAD@{1}: commit (merge): orderHistory
+[33m33ac0d7[m HEAD@{2}: merge orderBranch: Merge made by the 'recursive' strategy.
+[33m73d6d71[m HEAD@{3}: checkout: moving from newBranch to main
+[33md3b93f1[m[33m ([m[1;32mnewBranch[m[33m)[m HEAD@{4}: commit: orderhistory
+[33m38e4b33[m[33m ([m[1;31morigin/orderBranch[m[33m, [m[1;32morderBranch[m[33m)[m HEAD@{5}: checkout: moving from orderBranch to newBranch
+[33m38e4b33[m[33m ([m[1;31morigin/orderBranch[m[33m, [m[1;32morderBranch[m[33m)[m HEAD@{6}: commit: order history feature
+[33m73d6d71[m HEAD@{7}: checkout: moving from main to orderBranch
+[33m73d6d71[m HEAD@{8}: Branch: renamed refs/heads/master to refs/heads/main
+[33m73d6d71[m HEAD@{10}: commit (initial): portfolio backend
