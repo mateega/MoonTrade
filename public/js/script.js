@@ -10,13 +10,13 @@ const dateToday = (month + "/" + day + "/" + year);
 
 // ----- GET PRICE OF A CRYPTO -------------------------------------------
 let wantedPrice = 0.0; 
+
 function getPrice(wantedTicker){
     var burl = "https://api.binance.com";
     var query = '/api/v1/ticker/24hr';
     query += `?symbol=${wantedTicker}USDT`; 
     var url = burl + query;
     var ourRequest = new XMLHttpRequest();
-
     ourRequest.open('GET',url,false); // false = synchronous which is causing delay. true = asynchronous, but i couldn't figure out how to not return undefined with asynchronous
     ourRequest.onload = function(){
         // console.log(ourRequest.responseText);
@@ -27,6 +27,7 @@ function getPrice(wantedTicker){
     ourRequest.send();
     return wantedPrice;
 }
+
 let percentChange = 0.0;
 function getPercentChange(wantedTicker){
     var burl = "https://api.binance.com";
@@ -118,8 +119,9 @@ const getPositions = () => {
     var dbRef = firebase.database().ref();
     dbRef.orderByChild("coin").on('value', (snapshot) => { 
         data = snapshot.val();
-        // console.log(data);
-        renderDataAsHtml(data);
+        console.log(snapshot);
+        //console.log(data);
+        renderDataAsHtml(data); //snapshot
     });
 }
 
@@ -139,6 +141,7 @@ let tickers = ["exampleTicker"];
 const renderDataAsHtml = (data) => {
     cards = ``;
     orderHistory = ``;
+    console.log(data);
     for(const positionItem in data) {
         const position = data[positionItem];
         let ticker = position.coin;
@@ -154,7 +157,8 @@ const renderDataAsHtml = (data) => {
         else if (position.status == "in" || position.status == "out"){
             orderHistory += createOrder(position, positionItem) // For each position create an HTML card
         }
-  };
+    };
+
   document.querySelector('#app').innerHTML = cards;
   document.querySelector('#appHistory').innerHTML = orderHistory;
   getBalance();
