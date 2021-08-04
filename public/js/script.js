@@ -387,6 +387,7 @@ const updateCurrentPosition = (newPrice, newAmount, coinName) => {
 }
 
 // search function
+
 const startSearch = () => {
     const searchInput = document.querySelector('#search').value;
     let url = "https://api.binance.com/api/v1/ticker/24hr";
@@ -477,3 +478,22 @@ const addCoin = (coinPrice, coinName) => {
         }
     });
 };
+
+let BTCelement = document.getElementById("priceBTC");
+BTCelement.innerText = `${usCurrencyFormat.format(getPrice("BTC"))} (+${getPercentChange("BTC")}%)`;
+let ETHelement = document.getElementById("priceETH");
+ETHelement.innerText = `${usCurrencyFormat.format(getPrice("ETH"))} (+${getPercentChange("ETH")}%)`;
+let USDTelement = document.getElementById("priceUSDT");
+USDTelement.innerText = `${usCurrencyFormat.format(getPrice("USDT"))} (+${getPercentChange("USDT")}%)`;
+let BNBelement = document.getElementById("priceBNB");
+BNBelement.innerText = `${usCurrencyFormat.format(getPrice("BNB"))} (+${getPercentChange("BNB")}%)`;
+let ADAelement = document.getElementById("priceADA");
+ADAelement.innerText = `${usCurrencyFormat.format(getPrice("ADA"))} (+${getPercentChange("ADA")}%)`;
+let XRPelement = document.getElementById("priceXRP");
+XRPelement.innerText = `${usCurrencyFormat.format(getPrice("XRP"))} (+${getPercentChange("XRP")}%)`;
+let USDCelement = document.getElementById("priceUSDC");
+USDCelement.innerText = `${usCurrencyFormat.format(getPrice("USDC"))} (+${getPercentChange("USDC")}%)`;
+let DOGEelement = document.getElementById("priceDOGE");
+DOGEelement.innerText = `${usCurrencyFormat.format(getPrice("DOGE"))} (+${getPercentChange("DOGE")}%)`;
+let DOTelement = document.getElementById("priceDOT");
+DOTelement.innerText = `${usCurrencyFormat.format(getPrice("DOT"))} (+${getPercentChange("DOT")}%)`;
