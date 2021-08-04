@@ -137,6 +137,7 @@ let porfolioValue = 0; // this is actually amount invested
 let porfolioWorth = 0;
 let tickers = ["exampleTicker"];
 const renderDataAsHtml = (data) => {
+    let cardArr = [];
     cards = ``;
     orderHistory = ``;
     for(const positionItem in data) {
@@ -144,7 +145,11 @@ const renderDataAsHtml = (data) => {
         let ticker = position.coin;
         // console.log(ticker);
         if (position.status == "in"){
-            cards += createCard(position, positionItem) // For each position create an HTML card
+            if (!cardArr.includes(ticker)){
+                cards += createCard(position, positionItem) // For each position create an HTML card
+                cardArr.push(ticker);
+                console.log(cardArr);
+            }
             tickers.push(ticker);
             positions.push(position);
             let positionValue = (position.amount)*(position.price);
@@ -155,7 +160,9 @@ const renderDataAsHtml = (data) => {
             orderHistory += createOrder(position, positionItem) // For each position create an HTML card
         }
   };
+  console.log(cards);
   document.querySelector('#app').innerHTML = cards;
+  console.log(orderHistory);
   document.querySelector('#appHistory').innerHTML = orderHistory;
   getBalance();
 };
@@ -224,8 +231,6 @@ const getBalance = () => {
     investElement.innerText = usCurrencyFormat.format(invested);
     cashElement.innerText = usCurrencyFormat.format(cash);
     createPieChart(invested, cash);
-    // console.log("Portfolio worth");
-    // console.log(porfolioWorth + cash);
     let gain = (porfolioWorth - porfolioValue);
     let gainSymbol = "";
     if (gain >= 0){
@@ -252,15 +257,10 @@ const updateInvested = () => {
             porfolioWorth += ((position.amount)*(getPrice(position.coin)));
         } 
     };
-    // console.log("NEW PORTFOLIO VALUE");
-    // console.log(porfolioValue);
     cash = 100000 - porfolioValue;
     investElement.innerText = usCurrencyFormat.format(porfolioValue);
     cashElement.innerText = usCurrencyFormat.format(cash);
     createPieChart(porfolioValue, cash);
-    
-    // console.log("Portfolio worth");
-    // console.log(porfolioWorth + cash);
 
     let gain = (porfolioWorth - porfolioValue);
     let gainSymbol = "";
@@ -309,17 +309,6 @@ const buyEth = (coinName) => {
         console.log("you already have a position in this crypto.");
         //update the current position
         updateCurrentPosition(coinPrice, lotSize, coinName);
-        //need to add new data point
-        // createOrderHistoryPoint(coinPrice, lotSize, coinName);
-        // firebase.database().ref().push({
-        //     coin: coinName,
-        //     price: ((((parseFloat(position.price))*(parseFloat(position.amount))) + (newPrice*newAmount))/(parseFloat(position.amount) + newAmount)),
-        //     amount: parseFloat(position.amount) + newAmount,
-        //     buyAmount: newAmount,
-        //     status: "in",
-        //     direction: "buy",
-        //     date: dateToday
-        // })
     }
     else {
         console.log("you are entering a new position.");
@@ -342,54 +331,43 @@ const buyEth = (coinName) => {
 
 const updateCurrentPosition = (newPrice, newAmount, coinName) => {
     // let count = 0;
-    for(const positionItem in data) {
-        const position = data[positionItem];
-        let ticker = position.coin;
-        console.log(ticker);
-        if (ticker == coinName){
-            console.log("match");
-            const oldAmount = parseFloat(position.amount);
-            const oldPrice = parseFloat(position.price);
-            const positionEdit = {
-                coin: coinName,
-                price: ((((oldPrice)*(oldAmount)) + (newPrice*newAmount))/(oldAmount + newAmount)),
-                amount: oldAmount + newAmount,
-                // buyAmount: newAmount,
-                // status: "in",
-                // direction: "buy",
-                // date: dateToday                
+    const watchRef = firebase.database().ref();
+    watchRef.on('value', (snapshot) => {
+        data = snapshot.val();
+        for(const positionItem in data) {
+            const position = data[positionItem];
+            let ticker = position.coin;
+            console.log(ticker);
+            if (ticker == coinName){
+                console.log("match");
+                const oldAmount = parseFloat(position.amount);
+                const oldPrice = parseFloat(position.price);
+                const positionEdit = {
+                    coin: coinName,
+                    price: ((((oldPrice)*(oldAmount)) + (newPrice*newAmount))/(oldAmount + newAmount)),
+                    amount: oldAmount + newAmount,             
+                }
+                console.log("you are creating a new orderhistory point.");
+                firebase.database().ref().push({
+                    coin: coinName,
+                    price: ((((oldPrice)*(oldAmount)) + (newPrice*newAmount))/(oldAmount + newAmount)),
+                    amount: oldAmount + newAmount,
+                    buyAmount: newAmount,
+                    status: "in",
+                    direction: "buy",
+                    date: dateToday,
+                    watch: false
+                })
+                firebase.database().ref(positionItem).update(positionEdit);
             }
-            // firebase.database().ref(positionItem).update(positionEdit);
-            console.log("you are creating a new orderhistory point.");
-            //create a new datapoint in firebase
-            firebase.database().ref().push({
-                coin: coinName,
-                price: ((((oldPrice)*(oldAmount)) + (newPrice*newAmount))/(oldAmount + newAmount)),
-                amount: oldAmount + newAmount,
-                buyAmount: newAmount,
-                status: "in",
-                direction: "buy",
-                date: dateToday,
-                watch: false
-            })
-            // if (count < 1){
-            //     firebase.database().ref().push({
-            //         coin: coinName,
-            //         price: ((((oldPrice)*(oldAmount)) + (newPrice*newAmount))/(oldAmount + newAmount)),
-            //         amount: oldAmount + newAmount,
-            //         buyAmount: newAmount,
-            //         status: "in",
-            //         direction: "buy",
-            //         date: dateToday,
-            //         watch: false
-            //     })
-            //     count++;
-            // }
-            firebase.database().ref(positionItem).update(positionEdit);
         }
-    }
+    });
+};
 
     const createOrderHistoryPoint = (newPrice, newAmount, coinName) => {
+        const watchRef = firebase.database().ref();
+        watchRef.on('value', (snapshot) => {
+        data = snapshot.val();
         for(const positionItem in data) {
         const position = data[positionItem];
             const oldAmount = parseFloat(position.amount);
@@ -405,22 +383,8 @@ const updateCurrentPosition = (newPrice, newAmount, coinName) => {
                 watch: false
             })
         }
-    }
-
-    // firebase.database().ref().push({
-    //     coin: coinName,
-    //     price: ((((parseFloat(position.price))*(parseFloat(position.amount))) + (newPrice*newAmount))/(parseFloat(position.amount) + newAmount)),
-    //     amount: parseFloat(position.amount) + newAmount,
-    //     buyAmount: newAmount,
-    //     status: "in",
-    //     direction: "buy",
-    //     date: dateToday
-    // })
+    });
 }
-
-// const testing = (name) => {
-//     console.log(NamedNodeMap);
-// }
 
 // search function
 const startSearch = () => {
@@ -461,61 +425,16 @@ const startSearch = () => {
     })
 };
 
-// //buy positions
-// const buyPosition = (desiredPositionItem) => {
-//     const messagesRef = firebase.database().ref();
-//     messagesRef.on('value', (snapshot) => {
-//         data = snapshot.val();
-//         console.log(data);
-//     });
-//     for(const positionItem in data) {
-//         const position = data[positionItem];
-//         if (positionItem == desiredPositionItem){
-//             const amountBuy = prompt("How many coins would you like to buy?");
-//             if (amountBuy > 0 && amountBuy < position.amount){ //to filter out canceled out buy orders
-//                 console.log("user wants to buy part");
-//                 const oldAmount = parseFloat(position.amount);
-//                 const positionEdit = {
-//                     coin: position.coin,
-//                     price: position.price,
-//                     amount: (oldAmount + amountBuy),
-//                 }
-//                 firebase.database().ref(positionItem).update(positionEdit);
-//                 console.log("you are creating a new orderhistory point.");
-//                 //create a new datapoint in firebase
-//                 firebase.database().ref().push({
-//                     coin: position.coin,
-//                     price: getPrice(position.coin),
-//                     buyAmount: position.buyAmount,
-//                     amount: amountBuy,
-//                     status: "out",
-//                     direction: "buy",
-//                     date: dateToday
-//                 })
-//                 updateInvested(); //update the amount invested number shown on screen
-//             }
-//             else {
-//                 console.log("user has cancelled buy order");
-//             }
-//         }
-
-//   };
-
-// }
-
-// window.onload = (event) => {
-//     displayWatch();
-// }
-
+//display the watchlist
 const displayWatch = () => {
     const watchRef = firebase.database().ref('watched');
     watchRef.on('value', (snapshot) => {
         data = snapshot.val();
-        console.log(data);
-        console.log("watchlist running");
         let cards = ``;
         for (const positionItem in data){
             const position = data[positionItem];
+            console.log(position);
+            if (position != "neither"){
             cards += `<div class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
@@ -529,6 +448,7 @@ const displayWatch = () => {
                                 </button>
                             </header>
                         </div>`;
+            }
         }
         const watchId = document.querySelector("#watch");
         console.log(cards);
