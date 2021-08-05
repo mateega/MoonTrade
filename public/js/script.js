@@ -118,6 +118,7 @@ const sellPosition = (desiredPositionItem) => {
 
 // --------- CURRENT POSITIONS -------------------------------------------------------------------
 window.onload = (event) => {
+    displayWatch();
     modal.classList.toggle('is-active');
     setTimeout(() => {
         getPositions(); //delay so porfolio can be valued at current crypto prices (takes a second to get this data)
