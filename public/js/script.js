@@ -466,7 +466,8 @@ const startSearch = () => {
         const coinData = myjson[coinElement];
         const ticker = `${searchInput}USDT`;
         if (ticker === coinData.symbol){
-            results.innerHTML += `<div class="card">
+            displayAbout(searchInput);
+            results.innerHTML += `<div class="card" onclick="displayAbout('${searchInput}')">
                             <header class="card-header">
                                 <p class="card-header-title ">
                                 ${searchInput}
@@ -490,6 +491,40 @@ const startSearch = () => {
     })
 };
 
+const displayAbout = (coinName) => {
+    // const searchInput = document.querySelector('#search').value;
+    let url = "https://api.binance.com/api/v1/ticker/24hr";
+
+    fetch(url)
+    .then(response => response.json()) // read JSON response
+    .then(myjson => {
+        console.log("displaying about");
+    const name = document.querySelector('#name');
+    const ohl = document.querySelector('#ohl');
+    const vol = document.querySelector('#volume');
+    const quote = document.querySelector('#quote');
+    const change = document.querySelector('#change');
+    const percent = document.querySelector('#percent');
+    const weight = document.querySelector('#weight');
+    for(coinElement in myjson) {
+        const coinData = myjson[coinElement];
+        const ticker = `${coinName}USDT`;
+        if (ticker === coinData.symbol){
+            name.innerHTML = `${coinName}`
+            ohl.innerHTML = `O/H/L: $${coinData.openPrice}/$${coinData.highPrice}/$${coinData.lowPrice}`
+            vol.innerHTML = `Volume: ${coinData.volume}`
+            quote.innerHTML = `Quote Volume: ${coinData.quoteVolume}`
+            change.innerHTML = `Price Change: $${coinData.priceChange}`
+            percent.innerHTML = `Price Change Percent: ${coinData.priceChangePercent}%`
+            weight.innerHTML = `Weighted Average Price: $${coinData.weightedAvgPrice}`
+        }
+    }
+    })
+    .catch(error => {
+      console.log(error); // Log error if there is one
+    })
+}
+
 //display the watchlist
 const displayWatch = () => {
     const watchRef = firebase.database().ref('watched');
@@ -500,7 +535,8 @@ const displayWatch = () => {
             const position = data[positionItem];
             console.log(position);
             if (position != "neither"){
-            cards += `<div class="card">
+            cards += `<d
+            iv class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
                                 ${position.coinName}
@@ -547,8 +583,6 @@ let BTCelement = document.getElementById("priceBTC");
 BTCelement.innerText = `${usCurrencyFormat.format(getPrice("BTC"))} (+${getPercentChange("BTC")}%)`;
 let ETHelement = document.getElementById("priceETH");
 ETHelement.innerText = `${usCurrencyFormat.format(getPrice("ETH"))} (+${getPercentChange("ETH")}%)`;
-let USDTelement = document.getElementById("priceUSDT");
-USDTelement.innerText = `${usCurrencyFormat.format(getPrice("USDT"))} (+${getPercentChange("USDT")}%)`;
 let BNBelement = document.getElementById("priceBNB");
 BNBelement.innerText = `${usCurrencyFormat.format(getPrice("BNB"))} (+${getPercentChange("BNB")}%)`;
 let ADAelement = document.getElementById("priceADA");
