@@ -1,4 +1,4 @@
-// --------- NUMBER FORMATTING, CURRENT DATE, LOADING MODAL -----------------------------------------------------------------------
+// --------- NUMBER FORMATTING, LOADING, AND CURRENT DATE -----------------------------------------------------------------------
 const usCurrencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}); // usCurrencyFormat.format(num)
 const percentFormat = new Intl.NumberFormat("en-US",{style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2});
 
@@ -63,7 +63,7 @@ const sellPosition = (desiredPositionItem) => {
         if (positionItem == desiredPositionItem){
             const amountSell = prompt("How many coins would you like to sell?");
             closeModal();
-            setTimeout(() => {
+            setTimeout(() => {            
             if (amountSell > 0 && amountSell < position.amount){ //to filter out canceled out sell orders
                 // user wants to sell part
                 const oldAmount = parseFloat(position.amount);
@@ -107,7 +107,6 @@ const sellPosition = (desiredPositionItem) => {
                 updateInvested();
             }
             else {
-                //modal.classList.toggle('is-active');
                 // user has cancelled sell order
             }
             closeModal();
@@ -124,7 +123,7 @@ window.onload = (event) => {
         getPositions(); //delay so porfolio can be valued at current crypto prices (takes a second to get this data)
         getSortedPositions();
     }, 2000); 
-    displayWatch();
+    // modal.classList.toggle('is-active');
 };
 
 let data = ``;
@@ -277,7 +276,7 @@ const updateInvested = () => {
 
     valueElement.innerText = (usCurrencyFormat.format((porfolioWorth + cash)));
     gainElement.innerText = (`${gainSymbol + usCurrencyFormat.format(gain)} (${gainSymbol + percentFormat.format(gain/100000)}) Total`);
-    console.log("hit");    
+    
 }
 
 // ------ Pi Chart ---------------------
@@ -481,7 +480,7 @@ const startSearch = () => {
         const ticker = `${searchInput}USDT`;
         if (ticker === coinData.symbol){
             displayAbout(searchInput);
-            results.innerHTML += `<div class="card" onclick="displayAbout('${searchInput}')">
+            results.innerHTML += `<div class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
                                 ${searchInput}
@@ -489,10 +488,10 @@ const startSearch = () => {
                                 <p class="card-header-title ">
                                 $${getPrice(searchInput)}
                                 </p>
-                                <button class="card-header-icon" aria-label="more options" onclick="buyEth('${searchInput}')">
+                                <button class="card-header-icon button" aria-label="more options" onclick="buyEth('${searchInput}')">
                                 Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options" onclick="addCoin(${getPrice(searchInput)}, '${searchInput}')">
+                                <button class="card-header-icon button" aria-label="more options" onclick="addCoin(${getPrice(searchInput)}, '${searchInput}')">
                                 Add
                                 </button>
                             </header>
@@ -525,12 +524,12 @@ const displayAbout = (coinName) => {
         const ticker = `${coinName}USDT`;
         if (ticker === coinData.symbol){
             name.innerHTML = `${coinName}`
-            ohl.innerHTML = `O/H/L: $${coinData.openPrice}/$${coinData.highPrice}/$${coinData.lowPrice}`
+            ohl.innerHTML = `O/H/L: $${usCurrencyFormat.format(coinData.openPrice)}/$${usCurrencyFormat.format(coinData.highPrice)}/$${usCurrencyFormat.format(coinData.lowPrice)}`
             vol.innerHTML = `Volume: ${coinData.volume}`
             quote.innerHTML = `Quote Volume: ${coinData.quoteVolume}`
-            change.innerHTML = `Price Change: $${coinData.priceChange}`
+            change.innerHTML = `Price Change: $${usCurrencyFormat.format(coinData.priceChange)}`
             percent.innerHTML = `Price Change Percent: ${coinData.priceChangePercent}%`
-            weight.innerHTML = `Weighted Average Price: $${coinData.weightedAvgPrice}`
+            weight.innerHTML = `Weighted Average Price: $${usCurrencyFormat.format(coinData.weightedAvgPrice)}`
         }
     }
     })
@@ -569,6 +568,10 @@ const displayWatch = () => {
         console.log(cards);
         watchId.innerHTML = cards;
     });
+};
+
+const addTopTenCoin = (coinName) => {
+    addCoin(getPrice(coinName), coinName);
 };
 
 //add to watchlist

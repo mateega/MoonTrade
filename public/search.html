@@ -92,10 +92,10 @@
                                 </p>
                                 <p class="card-header-title " id="priceBTC">
                                 </p>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="buyEth('BTC')">
                                 Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('BTC')">
                                 Add
                                 </button>
                             </header>
@@ -107,10 +107,10 @@
                                 </p>
                                 <p class="card-header-title " id="priceETH">
                                 </p>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="buyEth('ETH')">
                                 Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('ETH')">
                                 Add
                                 </button>
                             </header>
@@ -123,10 +123,10 @@
                                 <p class="card-header-title">
                                 $1.00 (+0%)
                                 </p>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="buyEth('USDT')">
                                 Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('USDT')">
                                 Add
                                 </button>
                             </header>
@@ -138,10 +138,10 @@
                                 </p>
                                 <p class="card-header-title " id="priceBNB">
                                 </p>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="buyEth('BNB')">
                                 Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('BNB')">
                                 Add
                                 </button>
                             </header>
@@ -153,10 +153,10 @@
                                 </p>
                                 <p class="card-header-title " id="priceADA">
                                 </p>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="buyEth('ADA')">
                                 Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('ADA')">
                                 Add
                                 </button>
                             </header>
@@ -168,10 +168,10 @@
                                 </p>
                                 <p class="card-header-title " id="priceXRP">
                                 </p>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="buyEth('XRP')">
                                 Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('XRP')">
                                 Add
                                 </button>
                             </header>
@@ -183,10 +183,10 @@
                                 </p>
                                 <p class="card-header-title " id="priceUSDC">
                                 </p>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="buyEth('USDC')">
                                 Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('USDC')">
                                 Add
                                 </button>
                             </header>
@@ -198,10 +198,10 @@
                                 </p>
                                 <p class="card-header-title " id="priceDOGE">
                                 </p>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="buyEth('DOGE')">
                                 Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('DOGE')">
                                 Add
                                 </button>
                             </header>
@@ -213,10 +213,10 @@
                                 </p>
                                 <p class="card-header-title "id="priceDOT">
                                 </p>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="buyEth('DOT')">
                                 Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options">
+                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('DOT')">
                                 Add
                                 </button>
                             </header>
@@ -289,7 +289,30 @@
                                     </tr>
                                 </tbody>
                             </table> 
-                        </div>   
+                        </div> 
+                        <div class="tradingview-widget-container">
+                        <div id="basic-area-chart"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                        <script type="text/javascript">
+                        new TradingView.widget(
+                        {
+                        "container_id": "basic-area-chart",
+                        "width": 998,
+                        "height": 610,
+                        "symbol": "BTCUSD",
+                        "interval": "D",
+                        "timezone": "exchange",
+                        "theme": "light",
+                        "style": "3",
+                        "toolbar_bg": "#f1f3f6",
+                        "hide_top_toolbar": true,
+                        "save_image": false,
+                        "locale": "en"
+                        }
+                        );
+                        </script>
+                        </div>
+
                         <!-- <div class="container m-5">
                             <div class="notification is-light about">
                                 <section class="section">
