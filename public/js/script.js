@@ -534,7 +534,8 @@ const displayWatch = () => {
             const position = data[positionItem];
             console.log(position);
             if (position != "neither"){
-            cards += `<div class="card">
+            cards += `<d
+            iv class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
                                 ${position.coinName}
@@ -581,8 +582,6 @@ let BTCelement = document.getElementById("priceBTC");
 BTCelement.innerText = `${usCurrencyFormat.format(getPrice("BTC"))} (+${getPercentChange("BTC")}%)`;
 let ETHelement = document.getElementById("priceETH");
 ETHelement.innerText = `${usCurrencyFormat.format(getPrice("ETH"))} (+${getPercentChange("ETH")}%)`;
-let USDTelement = document.getElementById("priceUSDT");
-USDTelement.innerText = `${usCurrencyFormat.format(getPrice("USDT"))} (+${getPercentChange("USDT")}%)`;
 let BNBelement = document.getElementById("priceBNB");
 BNBelement.innerText = `${usCurrencyFormat.format(getPrice("BNB"))} (+${getPercentChange("BNB")}%)`;
 let ADAelement = document.getElementById("priceADA");
