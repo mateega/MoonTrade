@@ -1,6 +1,6 @@
 // --------- NUMBER FORMATTING, LOADING, AND CURRENT DATE -----------------------------------------------------------------------
-const usCurrencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}); // usCurrencyFormat.format(num)
-const percentFormat = new Intl.NumberFormat("en-US",{style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2});
+const usCurrencyFormat = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }); // usCurrencyFormat.format(num)
+const percentFormat = new Intl.NumberFormat("en-US", { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 var today = new Date();
 var day = today.getDate();
@@ -14,16 +14,16 @@ const closeModal = () => {
 }
 
 // ----- GET PRICE OF A CRYPTO -------------------------------------------
-let wantedPrice = 0.0; 
+let wantedPrice = 0.0;
 
-function getPrice(wantedTicker){
+function getPrice(wantedTicker) {
     var burl = "https://api.binance.com";
     var query = '/api/v1/ticker/24hr';
-    query += `?symbol=${wantedTicker}USDT`; 
+    query += `?symbol=${wantedTicker}USDT`;
     var url = burl + query;
     var ourRequest = new XMLHttpRequest();
-    ourRequest.open('GET',url,false); // false = synchronous which is causing delay. true = asynchronous, but i couldn't figure out how to not return undefined with asynchronous
-    ourRequest.onload = function(){
+    ourRequest.open('GET', url, false); // false = synchronous which is causing delay. true = asynchronous, but i couldn't figure out how to not return undefined with asynchronous
+    ourRequest.onload = function () {
         // console.log(ourRequest.responseText);
         let stockObject = JSON.parse(ourRequest.responseText);
         price = parseFloat(stockObject.lastPrice);
@@ -34,15 +34,15 @@ function getPrice(wantedTicker){
 }
 
 let percentChange = 0.0;
-function getPercentChange(wantedTicker){
+function getPercentChange(wantedTicker) {
     var burl = "https://api.binance.com";
     var query = '/api/v1/ticker/24hr';
     query += `?symbol=${wantedTicker}USDT`; // 
     var url = burl + query;
     var ourRequest = new XMLHttpRequest();
 
-    ourRequest.open('GET',url,false); // false = synchronous which is causing delay. true = asynchronous, but i couldn't figure out how to not return undefined with asynchronous
-    ourRequest.onload = function(){
+    ourRequest.open('GET', url, false); // false = synchronous which is causing delay. true = asynchronous, but i couldn't figure out how to not return undefined with asynchronous
+    ourRequest.onload = function () {
         // console.log(ourRequest.responseText);
         let stockObject = JSON.parse(ourRequest.responseText);
         percentChange = parseFloat(stockObject.priceChangePercent);
@@ -58,61 +58,61 @@ const sellPosition = (desiredPositionItem) => {
         data = snapshot.val();
         //console.log(data);
     });
-    for(const positionItem in data) {
+    for (const positionItem in data) {
         const position = data[positionItem];
-        if (positionItem == desiredPositionItem){
+        if (positionItem == desiredPositionItem) {
             const amountSell = prompt("How many coins would you like to sell?");
             closeModal();
-            setTimeout(() => {            
-            if (amountSell > 0 && amountSell < position.amount){ //to filter out canceled out sell orders
-                // user wants to sell part
-                const oldAmount = parseFloat(position.amount);
-                const positionEdit = {
-                    coin: position.coin,
-                    price: position.price,
-                    amount: (oldAmount - amountSell),
+            setTimeout(() => {
+                if (amountSell > 0 && amountSell < position.amount) { //to filter out canceled out sell orders
+                    // user wants to sell part
+                    const oldAmount = parseFloat(position.amount);
+                    const positionEdit = {
+                        coin: position.coin,
+                        price: position.price,
+                        amount: (oldAmount - amountSell),
+                    }
+                    firebase.database().ref(positionItem).update(positionEdit);
+                    //create a new datapoint in firebase
+                    firebase.database().ref().push({
+                        coin: position.coin,
+                        price: getPrice(position.coin),
+                        buyAmount: position.buyAmount,
+                        amount: amountSell,
+                        status: "out",
+                        direction: "sell",
+                        date: dateToday,
+                        watch: false
+                    })
+                    updateInvested(); //update the amount invested number shown on screen
                 }
-                firebase.database().ref(positionItem).update(positionEdit);
-                //create a new datapoint in firebase
-                firebase.database().ref().push({
-                    coin: position.coin,
-                    price: getPrice(position.coin),
-                    buyAmount: position.buyAmount,
-                    amount: amountSell,
-                    status: "out",
-                    direction: "sell",
-                    date: dateToday,
-                    watch: false
-                })
-                updateInvested(); //update the amount invested number shown on screen
-            }
-            else if (amountSell == position.amount) {
-                modal.classList.toggle('is-active');
-                // user wants to sell all
-                // firebase.database().ref(positionItem).remove();
-                const positionEdit = { //update old position
-                    status: "out"
+                else if (amountSell == position.amount) {
+                    modal.classList.toggle('is-active');
+                    // user wants to sell all
+                    // firebase.database().ref(positionItem).remove();
+                    const positionEdit = { //update old position
+                        status: "out"
+                    }
+                    firebase.database().ref(positionItem).update(positionEdit);
+                    firebase.database().ref().push({
+                        coin: position.coin,
+                        price: getPrice(position.coin),
+                        amount: amountSell,
+                        buyAmount: position.buyAmount,
+                        status: "out",
+                        direction: "sell",
+                        date: dateToday,
+                        watch: false
+                    })
+                    updateInvested();
                 }
-                firebase.database().ref(positionItem).update(positionEdit);
-                firebase.database().ref().push({
-                    coin: position.coin,
-                    price: getPrice(position.coin),
-                    amount: amountSell,
-                    buyAmount: position.buyAmount,
-                    status: "out",
-                    direction: "sell",
-                    date: dateToday,
-                    watch: false
-                })
-                updateInvested();
-            }
-            else {
-                // user has cancelled sell order
-            }
-            closeModal();
-            }, 0050); 
+                else {
+                    // user has cancelled sell order
+                }
+                closeModal();
+            }, 0050);
         }
-  };
+    };
 }
 
 // --------- CURRENT POSITIONS -------------------------------------------------------------------
@@ -122,14 +122,14 @@ window.onload = (event) => {
     setTimeout(() => {
         getPositions(); //delay so porfolio can be valued at current crypto prices (takes a second to get this data)
         getSortedPositions();
-    }, 2000); 
+    }, 2000);
     // modal.classList.toggle('is-active');
 };
 
 let data = ``;
 const getPositions = () => {
     var dbRef = firebase.database().ref();
-    dbRef.orderByChild("coin").on('value', (snapshot) => { 
+    dbRef.orderByChild("coin").on('value', (snapshot) => {
         data = snapshot.val();
         console.log(snapshot);
         //console.log(data);
@@ -155,33 +155,33 @@ const renderDataAsHtml = (data) => {
     cards = ``;
     orderHistory = ``;
     console.log(data);
-    for(const positionItem in data) {
+    for (const positionItem in data) {
         const position = data[positionItem];
         let ticker = position.coin;
         // console.log(ticker);
-        if (position.status == "in"){
+        if (position.status == "in") {
             // if (!cardArr.includes(ticker)){
-                cards += createCard(position, positionItem) // For each position create an HTML card
-                cardArr.push(ticker);
-                console.log(cardArr);
+            cards += createCard(position, positionItem) // For each position create an HTML card
+            cardArr.push(ticker);
+            console.log(cardArr);
             // }
             tickers.push(ticker);
             positions.push(position);
-            let positionValue = (position.amount)*(position.price);
+            let positionValue = (position.amount) * (position.price);
             porfolioValue += positionValue;
-            porfolioWorth += ((position.amount)*(getPrice(position.coin)));
+            porfolioWorth += ((position.amount) * (getPrice(position.coin)));
             orderHistory += createOrder(position, positionItem) // For each position create an HTML card
         }
-        else if (position.status == "out"){
+        else if (position.status == "out") {
             orderHistory += createOrder(position, positionItem) // For each position create an HTML card
         }
     };
 
-  console.log(cards);
-  document.querySelector('#app').innerHTML = cards;
-  console.log(orderHistory);
-  document.querySelector('#appHistory').innerHTML = orderHistory;
-  getBalance();
+    console.log(cards);
+    document.querySelector('#app').innerHTML = cards;
+    console.log(orderHistory);
+    document.querySelector('#appHistory').innerHTML = orderHistory;
+    getBalance();
 };
 
 const createCard = (position, positionItem) => {
@@ -192,10 +192,10 @@ const createCard = (position, positionItem) => {
     innerHTML += `${position.coin} (${position.amount})`
     innerHTML += `</p>`
     innerHTML += `<p class="card-header-title ">`
-    let gain = (((position.amount)*(getPrice(position.coin))) - (position.amount)*((position.price)));
+    let gain = (((position.amount) * (getPrice(position.coin))) - (position.amount) * ((position.price)));
     let gainSymbol = "";
-    if (gain >= 0){ gainSymbol = "+";}
-    innerHTML += `${usCurrencyFormat.format(getPrice(position.coin))} (${percentFormat.format((getPercentChange(position.coin))/100)})`
+    if (gain >= 0) { gainSymbol = "+"; }
+    innerHTML += `${usCurrencyFormat.format(getPrice(position.coin))} (${percentFormat.format((getPercentChange(position.coin)) / 100)})`
     innerHTML += `</p>`
     innerHTML += `<button class="card-header-icon" aria-label="more options" id="${positionItem}" onclick="sellPosition(this.id)">`
     innerHTML += `Sell`
@@ -213,10 +213,10 @@ const createOrder = (position, positionItem) => {
     innerHTML += `<div class="column is-2"><p class="my-3 mx-4">${position.coin}</p></div>`
     innerHTML += `<div class="column is-2"><p class="my-3 mx-4">${position.direction}</p></div>`
     let shownAmount = position.amount
-    if (position.status == "in"){shownAmount = position.buyAmount;}
+    if (position.status == "in") { shownAmount = position.buyAmount; }
     innerHTML += `<div class="column is-2"><p class="my-3 mx-4">${shownAmount}</p></div>`
     innerHTML += `<div class="column is-2"><p class="my-3 mx-4">${usCurrencyFormat.format(position.price)}</p></div>`
-    innerHTML += `<div class="column is-2"><p class="my-3 mx-4"><b>${usCurrencyFormat.format(shownAmount*(position.price))}</b></p></div>`
+    innerHTML += `<div class="column is-2"><p class="my-3 mx-4"><b>${usCurrencyFormat.format(shownAmount * (position.price))}</b></p></div>`
     innerHTML += `</div>`
     innerHTML += `</div>`
     return innerHTML;
@@ -238,11 +238,11 @@ const getBalance = () => {
     createPieChart(invested, cash);
     let gain = (porfolioWorth - porfolioValue);
     let gainSymbol = "";
-    if (gain >= 0){
+    if (gain >= 0) {
         gainSymbol = "+";
     }
     valueElement.innerText = (usCurrencyFormat.format((porfolioWorth + cash)));
-    gainElement.innerText = (`${gainSymbol + usCurrencyFormat.format(gain)} (${gainSymbol + percentFormat.format(gain/100000)}) Total`);
+    gainElement.innerText = (`${gainSymbol + usCurrencyFormat.format(gain)} (${gainSymbol + percentFormat.format(gain / 100000)}) Total`);
     modal.classList.toggle('is-active');
 }
 
@@ -255,13 +255,13 @@ const updateInvested = () => {
         // console.log(data);
     });
 
-    for(const positionItem in data) {
+    for (const positionItem in data) {
         const position = data[positionItem];
-        if (position.status == "in"){
-            let positionValue = (position.amount)*(position.price);
+        if (position.status == "in") {
+            let positionValue = (position.amount) * (position.price);
             porfolioValue += positionValue;
-            porfolioWorth += ((position.amount)*(getPrice(position.coin)));
-        } 
+            porfolioWorth += ((position.amount) * (getPrice(position.coin)));
+        }
     };
     cash = 100000 - porfolioValue;
     investElement.innerText = `Invested: ${usCurrencyFormat.format(porfolioValue)}`;
@@ -270,18 +270,18 @@ const updateInvested = () => {
 
     let gain = (porfolioWorth - porfolioValue);
     let gainSymbol = "";
-    if (gain >= 0){
+    if (gain >= 0) {
         gainSymbol = "+";
     }
 
     valueElement.innerText = (usCurrencyFormat.format((porfolioWorth + cash)));
-    gainElement.innerText = (`${gainSymbol + usCurrencyFormat.format(gain)} (${gainSymbol + percentFormat.format(gain/100000)}) Total`);
-    
+    gainElement.innerText = (`${gainSymbol + usCurrencyFormat.format(gain)} (${gainSymbol + percentFormat.format(gain / 100000)}) Total`);
+
 }
 
 // ------ Pi Chart ---------------------
 const createPieChart = (invested, cash) => {
-    google.charts.load('current', {'packages':['corechart']});
+    google.charts.load('current', { 'packages': ['corechart'] });
     google.charts.setOnLoadCallback(drawChart);
     // Draw the chart and set the chart values
     function drawChart() {
@@ -290,7 +290,7 @@ const createPieChart = (invested, cash) => {
             ['Invested', invested],
             ['Cash', cash]
         ]);
-        var options = {'legend': 'none'}; //remove legend
+        var options = { 'legend': 'none' }; //remove legend
         // Display the chart inside the <div> element with id="piechart"
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
         chart.draw(data, options);
@@ -307,56 +307,56 @@ const buyEth = (coinName) => {
     const newPrice = getPrice(coinName);
     // const oldAmount = parseFloat(position.amount);
     // const oldPrice = parseFloat(position.price);
-    
-    console.log({
-    price: newPrice,
-    amount: newAmount
-    }); 
 
-    if (tickers.includes(coinName)){ //see if there is a current position
+    console.log({
+        price: newPrice,
+        amount: newAmount
+    });
+
+    if (tickers.includes(coinName)) { //see if there is a current position
         console.log("you already have a position in this crypto.");
         //update the current position
         updateCurrentPosition(newPrice, newAmount, coinName);
-       
-    //     firebase.database().ref().push({
-    //         coin: coinName,
-    //         price: ((((oldPrice)*(oldAmount)) + (newPrice*newAmount))/(oldAmount + newAmount)),
-    //         amount: oldAmount + newAmount,
-    //         buyAmount: newAmount,
-    //         status: "in",
-    //         direction: "buy",
-    //         date: dateToday,
-    //         watch: false
-    //     })
-    //     firebase.database().ref(positionItem).update(positionEdit);
-       
-    //    // user wants to sell part
-    //     const oldAmount = parseFloat(position.amount);
-    //     const positionEdit = {
-    //         coin: position.coin,
-    //         price: position.price,
-    //         amount: (oldAmount - amountSell),
-    //     }
-    //     firebase.database().ref(positionItem).update(positionEdit);
-    //     //create a new datapoint in firebase
-    //     firebase.database().ref().push({
-    //         coin: position.coin,
-    //         price: getPrice(position.coin),
-    //         buyAmount: position.buyAmount,
-    //         amount: amountSell,
-    //         status: "out",
-    //         direction: "sell",
-    //         date: dateToday,
-    //         watch: false
-    //     })
 
-       
-       
-       
-       
-       
-       
-       
+        //     firebase.database().ref().push({
+        //         coin: coinName,
+        //         price: ((((oldPrice)*(oldAmount)) + (newPrice*newAmount))/(oldAmount + newAmount)),
+        //         amount: oldAmount + newAmount,
+        //         buyAmount: newAmount,
+        //         status: "in",
+        //         direction: "buy",
+        //         date: dateToday,
+        //         watch: false
+        //     })
+        //     firebase.database().ref(positionItem).update(positionEdit);
+
+        //    // user wants to sell part
+        //     const oldAmount = parseFloat(position.amount);
+        //     const positionEdit = {
+        //         coin: position.coin,
+        //         price: position.price,
+        //         amount: (oldAmount - amountSell),
+        //     }
+        //     firebase.database().ref(positionItem).update(positionEdit);
+        //     //create a new datapoint in firebase
+        //     firebase.database().ref().push({
+        //         coin: position.coin,
+        //         price: getPrice(position.coin),
+        //         buyAmount: position.buyAmount,
+        //         amount: amountSell,
+        //         status: "out",
+        //         direction: "sell",
+        //         date: dateToday,
+        //         watch: false
+        //     })
+
+
+
+
+
+
+
+
     }
     else {
         console.log("you are entering a new position.");
@@ -388,16 +388,16 @@ const buyEth = (coinName) => {
 
 
 const updateCurrentPosition = (newPrice, newAmount, coinName) => {
-    for(const positionItem in data) {
+    for (const positionItem in data) {
         const position = data[positionItem];
         let ticker = position.coin;
         console.log(ticker);
-        if (ticker == coinName && position.status == "in"){
+        if (ticker == coinName && position.status == "in") {
             console.log("match");
             const oldAmount = parseFloat(position.amount);
             const oldPrice = parseFloat(position.price)
             const positionEdit = {
-                price: ((((oldPrice)*(oldAmount)) + (newPrice*newAmount))/(oldAmount + newAmount)),
+                price: ((((oldPrice) * (oldAmount)) + (newPrice * newAmount)) / (oldAmount + newAmount)),
                 amount: oldAmount + newAmount
             }
             firebase.database().ref(positionItem).update(positionEdit);
@@ -435,23 +435,23 @@ const updateCurrentPosition = (newPrice, newAmount, coinName) => {
 //             //     //     watch: false
 //             //     // })
 //             //     //firebase.database().ref(positionItem).update(positionEdit);
-            
-            
+
+
 //         }
 //     });
 // };
 
-    const createOrderHistoryPoint = (newPrice, newAmount, coinName) => {
-        const watchRef = firebase.database().ref();
-        watchRef.on('value', (snapshot) => {
+const createOrderHistoryPoint = (newPrice, newAmount, coinName) => {
+    const watchRef = firebase.database().ref();
+    watchRef.on('value', (snapshot) => {
         data = snapshot.val();
-        for(const positionItem in data) {
-        const position = data[positionItem];
+        for (const positionItem in data) {
+            const position = data[positionItem];
             const oldAmount = parseFloat(position.amount);
             const oldPrice = parseFloat(position.price);
             firebase.database().ref().push({
                 coin: coinName,
-                price: ((((oldPrice)*(oldAmount)) + (newPrice*newAmount))/(oldAmount + newAmount)),
+                price: ((((oldPrice) * (oldAmount)) + (newPrice * newAmount)) / (oldAmount + newAmount)),
                 amount: oldAmount + newAmount,
                 buyAmount: newAmount,
                 status: "in",
@@ -470,17 +470,17 @@ const startSearch = () => {
     let url = "https://api.binance.com/api/v1/ticker/24hr";
 
     fetch(url)
-    .then(response => response.json()) // read JSON response
-    .then(myjson => {
-        console.log("finding coin");
-    const results = document.querySelector('#results');
-    results.innerHTML = "";
-    for(coinElement in myjson) {
-        const coinData = myjson[coinElement];
-        const ticker = `${searchInput}USDT`;
-        if (ticker === coinData.symbol){
-            displayAbout(searchInput);
-            results.innerHTML += `<div class="card">
+        .then(response => response.json()) // read JSON response
+        .then(myjson => {
+            console.log("finding coin");
+            const results = document.querySelector('#results');
+            results.innerHTML = "";
+            for (coinElement in myjson) {
+                const coinData = myjson[coinElement];
+                const ticker = `${searchInput}USDT`;
+                if (ticker === coinData.symbol) {
+                    displayAbout(searchInput);
+                    results.innerHTML += `<div class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
                                 ${searchInput}
@@ -496,12 +496,28 @@ const startSearch = () => {
                                 </button>
                             </header>
                         </div>`;
-        }
-    }
-    })
-    .catch(error => {
-      console.log(error); // Log error if there is one
-    })
+                }
+            }
+            new TradingView.widget(
+                {
+                    "container_id": "basic-area-chart",
+                    "width": 998,
+                    "height": 610,
+                    "symbol": searchInput + "USD",
+                    "interval": "D",
+                    "timezone": "exchange",
+                    "theme": "light",
+                    "style": "3",
+                    "toolbar_bg": "#f1f3f6",
+                    "hide_top_toolbar": true,
+                    "save_image": false,
+                    "locale": "en"
+                }
+            );
+        })
+        .catch(error => {
+            console.log(error); // Log error if there is one
+        })
 };
 
 const displayAbout = (coinName) => {
@@ -509,33 +525,33 @@ const displayAbout = (coinName) => {
     let url = "https://api.binance.com/api/v1/ticker/24hr";
 
     fetch(url)
-    .then(response => response.json()) // read JSON response
-    .then(myjson => {
-        console.log("displaying about");
-    const name = document.querySelector('#name');
-    const ohl = document.querySelector('#ohl');
-    const vol = document.querySelector('#volume');
-    const quote = document.querySelector('#quote');
-    const change = document.querySelector('#change');
-    const percent = document.querySelector('#percent');
-    const weight = document.querySelector('#weight');
-    for(coinElement in myjson) {
-        const coinData = myjson[coinElement];
-        const ticker = `${coinName}USDT`;
-        if (ticker === coinData.symbol){
-            name.innerHTML = `${coinName}`
-            ohl.innerHTML = `O/H/L: $${usCurrencyFormat.format(coinData.openPrice)}/$${usCurrencyFormat.format(coinData.highPrice)}/$${usCurrencyFormat.format(coinData.lowPrice)}`
-            vol.innerHTML = `Volume: ${coinData.volume}`
-            quote.innerHTML = `Quote Volume: ${coinData.quoteVolume}`
-            change.innerHTML = `Price Change: $${usCurrencyFormat.format(coinData.priceChange)}`
-            percent.innerHTML = `Price Change Percent: ${coinData.priceChangePercent}%`
-            weight.innerHTML = `Weighted Average Price: $${usCurrencyFormat.format(coinData.weightedAvgPrice)}`
-        }
-    }
-    })
-    .catch(error => {
-      console.log(error); // Log error if there is one
-    })
+        .then(response => response.json()) // read JSON response
+        .then(myjson => {
+            console.log("displaying about");
+            const name = document.querySelector('#name');
+            const ohl = document.querySelector('#ohl');
+            const vol = document.querySelector('#volume');
+            const quote = document.querySelector('#quote');
+            const change = document.querySelector('#change');
+            const percent = document.querySelector('#percent');
+            const weight = document.querySelector('#weight');
+            for (coinElement in myjson) {
+                const coinData = myjson[coinElement];
+                const ticker = `${coinName}USDT`;
+                if (ticker === coinData.symbol) {
+                    name.innerHTML = `${coinName}`
+                    ohl.innerHTML = `O/H/L: $${usCurrencyFormat.format(coinData.openPrice)}/$${usCurrencyFormat.format(coinData.highPrice)}/$${usCurrencyFormat.format(coinData.lowPrice)}`
+                    vol.innerHTML = `Volume: ${coinData.volume}`
+                    quote.innerHTML = `Quote Volume: ${coinData.quoteVolume}`
+                    change.innerHTML = `Price Change: $${usCurrencyFormat.format(coinData.priceChange)}`
+                    percent.innerHTML = `Price Change Percent: ${coinData.priceChangePercent}%`
+                    weight.innerHTML = `Weighted Average Price: $${usCurrencyFormat.format(coinData.weightedAvgPrice)}`
+                }
+            }
+        })
+        .catch(error => {
+            console.log(error); // Log error if there is one
+        })
 }
 
 //display the watchlist
@@ -544,11 +560,11 @@ const displayWatch = () => {
     watchRef.on('value', (snapshot) => {
         data = snapshot.val();
         let cards = ``;
-        for (const positionItem in data){
+        for (const positionItem in data) {
             const position = data[positionItem];
             console.log(position);
-            if (position != "neither"){
-            cards += `<d
+            if (position != "neither") {
+                cards += `<d
             iv class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
@@ -580,13 +596,13 @@ const addCoin = (coinPrice, coinName) => {
     watchRef.on('value', (snapshot) => {
         data = snapshot.val();
         let isWatched = false;
-        for (const positionItem in data){
+        for (const positionItem in data) {
             const position = data[positionItem];
-            if (position.coinName === coinName){
+            if (position.coinName === coinName) {
                 isWatched = true;
             }
         }
-        if (!isWatched){
+        if (!isWatched) {
             firebase.database().ref('watched').push({
                 coinName: coinName,
                 coinPrice: coinPrice,
