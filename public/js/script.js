@@ -466,7 +466,7 @@ const startSearch = () => {
         const coinData = myjson[coinElement];
         const ticker = `${searchInput}USDT`;
         if (ticker === coinData.symbol){
-            results.innerHTML += `<div class="card">
+            results.innerHTML += `<div class="card" onclick="displayAbout('${searchInput}')">
                             <header class="card-header">
                                 <p class="card-header-title ">
                                 ${searchInput}
@@ -489,6 +489,40 @@ const startSearch = () => {
       console.log(error); // Log error if there is one
     })
 };
+
+const displayAbout = (coinName) => {
+    // const searchInput = document.querySelector('#search').value;
+    let url = "https://api.binance.com/api/v1/ticker/24hr";
+
+    fetch(url)
+    .then(response => response.json()) // read JSON response
+    .then(myjson => {
+        console.log("displaying about");
+    const name = document.querySelector('#name');
+    const ohl = document.querySelector('#ohl');
+    const vol = document.querySelector('#volume');
+    const quote = document.querySelector('#quote');
+    const change = document.querySelector('#change');
+    const percent = document.querySelector('#percent');
+    const weight = document.querySelector('#weight');
+    for(coinElement in myjson) {
+        const coinData = myjson[coinElement];
+        const ticker = `${coinName}USDT`;
+        if (ticker === coinData.symbol){
+            name.innerHTML = `${coinName}`
+            ohl.innerHTML = `O/H/L: $${coinData.openPrice}/$${coinData.highPrice}/$${coinData.lowPrice}`
+            vol.innerHTML = `Volume: ${coinData.volume}`
+            quote.innerHTML = `Quote Volume: ${coinData.quoteVolume}`
+            change.innerHTML = `Price Change: $${coinData.priceChange}`
+            percent.innerHTML = `Price Change Percent: ${coinData.priceChangePercent}%`
+            weight.innerHTML = `Weighted Average Price: $${coinData.weightedAvgPrice}`
+        }
+    }
+    })
+    .catch(error => {
+      console.log(error); // Log error if there is one
+    })
+}
 
 //display the watchlist
 const displayWatch = () => {
