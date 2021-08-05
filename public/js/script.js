@@ -1,4 +1,4 @@
-// --------- NUMBER FORMATTING, CURRENT DATE, LOADING MODAL -----------------------------------------------------------------------
+// --------- NUMBER FORMATTING AND CURRENT DATE -----------------------------------------------------------------------
 const usCurrencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}); // usCurrencyFormat.format(num)
 const percentFormat = new Intl.NumberFormat("en-US",{style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2});
 
@@ -7,11 +7,6 @@ var day = today.getDate();
 var month = today.getMonth();
 var year = today.getFullYear();
 const dateToday = (month + "/" + day + "/" + year);
-
-const modal = document.querySelector('#loadingModal');
-const closeModal = () => {
-    modal.classList.toggle('is-active');
-}
 
 // ----- GET PRICE OF A CRYPTO -------------------------------------------
 let wantedPrice = 0.0; 
@@ -62,8 +57,6 @@ const sellPosition = (desiredPositionItem) => {
         const position = data[positionItem];
         if (positionItem == desiredPositionItem){
             const amountSell = prompt("How many coins would you like to sell?");
-            closeModal();
-            setTimeout(() => {
             if (amountSell > 0 && amountSell < position.amount){ //to filter out canceled out sell orders
                 // user wants to sell part
                 const oldAmount = parseFloat(position.amount);
@@ -87,7 +80,6 @@ const sellPosition = (desiredPositionItem) => {
                 updateInvested(); //update the amount invested number shown on screen
             }
             else if (amountSell == position.amount) {
-                modal.classList.toggle('is-active');
                 // user wants to sell all
                 // firebase.database().ref(positionItem).remove();
                 const positionEdit = { //update old position
@@ -107,18 +99,14 @@ const sellPosition = (desiredPositionItem) => {
                 updateInvested();
             }
             else {
-                //modal.classList.toggle('is-active');
                 // user has cancelled sell order
             }
-            closeModal();
-            }, 0050); 
         }
   };
 }
 
 // --------- CURRENT POSITIONS -------------------------------------------------------------------
 window.onload = (event) => {
-    modal.classList.toggle('is-active');
     setTimeout(() => {
         getPositions(); //delay so porfolio can be valued at current crypto prices (takes a second to get this data)
         getSortedPositions();
@@ -243,7 +231,6 @@ const getBalance = () => {
     }
     valueElement.innerText = (usCurrencyFormat.format((porfolioWorth + cash)));
     gainElement.innerText = (`${gainSymbol + usCurrencyFormat.format(gain)} (${gainSymbol + percentFormat.format(gain/100000)}) Total`);
-    modal.classList.toggle('is-active');
 }
 
 const updateInvested = () => {
@@ -276,7 +263,7 @@ const updateInvested = () => {
 
     valueElement.innerText = (usCurrencyFormat.format((porfolioWorth + cash)));
     gainElement.innerText = (`${gainSymbol + usCurrencyFormat.format(gain)} (${gainSymbol + percentFormat.format(gain/100000)}) Total`);
-    console.log("hit");    
+    
 }
 
 // ------ Pi Chart ---------------------
