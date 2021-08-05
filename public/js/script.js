@@ -424,7 +424,8 @@ const displayWatch = () => {
             const position = data[positionItem];
             console.log(position);
             if (position != "neither"){
-            cards += `<div class="card">
+            cards += `<d
+            iv class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
                                 ${position.coinName}
