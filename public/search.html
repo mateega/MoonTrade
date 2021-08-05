@@ -2,12 +2,12 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MoonTrade | Search</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoonTrade | Search</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
 
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script defer src="/__/firebase/8.3.1/firebase-app.js"></script>
@@ -17,55 +17,57 @@
     <script defer src="/__/firebase/8.3.1/firebase-auth.js"></script>
     <script src="js/Interact.js"></script>
     <script src="js/signOut.js"></script>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 </head>
 
 <body>
 
     <!-- Heading -->
     <section class="hero is-small is-link has-text-centered">
-      <div class="hero-body">
-        <p class="title">
-          MoonTrade
-        </p>
-        <p class="subtitle">
-          Search
-        </p>
-      </div>
+        <div class="hero-body">
+            <p class="title">
+                MoonTrade
+            </p>
+            <p class="subtitle">
+                Search
+            </p>
+        </div>
     </section>
 
     <!-- Navbar -->
     <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
 
-            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+                data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
             </a>
         </div>
 
         <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
-                <p class = "navbar-item card-header-title">
+                <p class="navbar-item card-header-title">
                     MoonTrade
                 </p>
-            <a class="navbar-item" href="/index.html">
-                Portfolio
-            </a>
+                <a class="navbar-item" href="/index.html">
+                    Portfolio
+                </a>
 
-            <a class="navbar-item" href="/search.html">
-                Search
-            </a>
+                <a class="navbar-item" href="/search.html">
+                    Search
+                </a>
             </div>
 
             <div class="navbar-end">
-            <div class="navbar-item">
-                <div class="buttons">
-                <a class="button is-link" onclick="signOut()">
-                    <strong>Sign out</strong>
-                </a>
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a class="button is-link" onclick="signOut()">
+                            <strong>Sign out</strong>
+                        </a>
+                    </div>
                 </div>
-            </div>
             </div>
         </div>
     </nav>
@@ -75,161 +77,170 @@
         <input id="search" class="input is-primary" type="text" placeholder="Search" onKeyUp="startSearch()">
     </div>
 
-    <div class = "columns">
-        <div class = "column is-one-third">
-            <div class = "columns">
-                <div class="column"> 
+    <div class="columns">
+        <div class="column is-one-third">
+            <div class="columns">
+                <div class="column">
                     <div class="card m-5">
                         <header class="card-header">
                             <p class="card-header-title is-size-5">
-                            Top Ten
+                                Top Ten
                             </p>
                         </header>
                         <div class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
-                                BTC
+                                    BTC
                                 </p>
                                 <p class="card-header-title " id="priceBTC">
                                 </p>
                                 <button class="card-header-icon" aria-label="more options" onclick="buyEth('BTC')">
-                                Buy
+                                    Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('BTC')">
-                                Add
+                                <button class="card-header-icon" aria-label="more options"
+                                    onclick="addTopTenCoin('BTC')">
+                                    Add
                                 </button>
                             </header>
                         </div>
                         <div class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
-                                ETH
+                                    ETH
                                 </p>
                                 <p class="card-header-title " id="priceETH">
                                 </p>
                                 <button class="card-header-icon" aria-label="more options" onclick="buyEth('ETH')">
-                                Buy
+                                    Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('ETH')">
-                                Add
+                                <button class="card-header-icon" aria-label="more options"
+                                    onclick="addTopTenCoin('ETH')">
+                                    Add
                                 </button>
                             </header>
                         </div>
                         <div class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
-                                USDT
+                                    USDT
                                 </p>
                                 <p class="card-header-title">
-                                $1.00 (+0%)
+                                    $1.00 (+0%)
                                 </p>
                                 <button class="card-header-icon" aria-label="more options" onclick="buyEth('USDT')">
-                                Buy
+                                    Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('USDT')">
-                                Add
+                                <button class="card-header-icon" aria-label="more options"
+                                    onclick="addTopTenCoin('USDT')">
+                                    Add
                                 </button>
                             </header>
                         </div>
                         <div class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
-                                BNB
+                                    BNB
                                 </p>
                                 <p class="card-header-title " id="priceBNB">
                                 </p>
                                 <button class="card-header-icon" aria-label="more options" onclick="buyEth('BNB')">
-                                Buy
+                                    Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('BNB')">
-                                Add
+                                <button class="card-header-icon" aria-label="more options"
+                                    onclick="addTopTenCoin('BNB')">
+                                    Add
                                 </button>
                             </header>
                         </div>
                         <div class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
-                                ADA
+                                    ADA
                                 </p>
                                 <p class="card-header-title " id="priceADA">
                                 </p>
                                 <button class="card-header-icon" aria-label="more options" onclick="buyEth('ADA')">
-                                Buy
+                                    Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('ADA')">
-                                Add
+                                <button class="card-header-icon" aria-label="more options"
+                                    onclick="addTopTenCoin('ADA')">
+                                    Add
                                 </button>
                             </header>
                         </div>
                         <div class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
-                                XRP
+                                    XRP
                                 </p>
                                 <p class="card-header-title " id="priceXRP">
                                 </p>
                                 <button class="card-header-icon" aria-label="more options" onclick="buyEth('XRP')">
-                                Buy
+                                    Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('XRP')">
-                                Add
+                                <button class="card-header-icon" aria-label="more options"
+                                    onclick="addTopTenCoin('XRP')">
+                                    Add
                                 </button>
                             </header>
                         </div>
                         <div class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
-                                USDC
+                                    USDC
                                 </p>
                                 <p class="card-header-title " id="priceUSDC">
                                 </p>
                                 <button class="card-header-icon" aria-label="more options" onclick="buyEth('USDC')">
-                                Buy
+                                    Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('USDC')">
-                                Add
+                                <button class="card-header-icon" aria-label="more options"
+                                    onclick="addTopTenCoin('USDC')">
+                                    Add
                                 </button>
                             </header>
                         </div>
                         <div class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
-                                DOGE
+                                    DOGE
                                 </p>
                                 <p class="card-header-title " id="priceDOGE">
                                 </p>
                                 <button class="card-header-icon" aria-label="more options" onclick="buyEth('DOGE')">
-                                Buy
+                                    Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('DOGE')">
-                                Add
+                                <button class="card-header-icon" aria-label="more options"
+                                    onclick="addTopTenCoin('DOGE')">
+                                    Add
                                 </button>
                             </header>
                         </div>
                         <div class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
-                                DOT
+                                    DOT
                                 </p>
-                                <p class="card-header-title "id="priceDOT">
+                                <p class="card-header-title " id="priceDOT">
                                 </p>
                                 <button class="card-header-icon" aria-label="more options" onclick="buyEth('DOT')">
-                                Buy
+                                    Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options" onclick="addTopTenCoin('DOT')">
-                                Add
+                                <button class="card-header-icon" aria-label="more options"
+                                    onclick="addTopTenCoin('DOT')">
+                                    Add
                                 </button>
                             </header>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class = "columns">
-                <div class="column"> 
+            <div class="columns">
+                <div class="column">
                     <div class="card m-5">
                         <header class="card-header">
                             <p class="card-header-title is-size-5">
-                            Watchlist
+                                Watchlist
                             </p>
                         </header>
                         <div id="watch">
@@ -237,31 +248,31 @@
                     </div>
                 </div>
             </div>
-        
+
         </div>
 
         <!-- Search -->
-        <div class = "column auto">
-            <div class = "columns">
-                <div class="column"> 
+        <div class="column auto">
+            <div class="columns">
+                <div class="column">
                     <div class="card m-5">
                         <header class="card-header">
                             <p class="card-header-title is-size-5">
-                            Search Results
+                                Search Results
                             </p>
                         </header>
                         <div id="results">
                             <!-- search results appear here -->
                         </div>
                     </div>
-                
+
                 </div>
             </div>
             <div class="columns">
                 <div class="column">
                     <div class="card m-5 is-vcentered is-centered">
                         <p class="card-header-title is-size-5" id="name">
-                        <!-- Name of Coin -->
+                            <!-- Name of Coin -->
                         </p>
                         <!-- <header class="card-header is-vcentered is-centered">
                             <input class="input" type="text" placeholder="Number of Shares">
@@ -272,7 +283,7 @@
                         <!-- <div class="container m-5">
                             <img src="https://s3.tradingview.com/w/wYkiCmZS_mid.webp" alt="TradingView graph">
                         </div> -->
-                        <div class="container m-5 is-centered is-vcentered">                        
+                        <div class="container m-5 is-centered is-vcentered">
                             <table class="table is-bordered is-fullwidth">
                                 <tbody>
                                     <tr>
@@ -288,29 +299,11 @@
                                         <th id="percent">Price Change Percent: </th>
                                     </tr>
                                 </tbody>
-                            </table> 
-                        </div> 
+                            </table>
+                        </div>
                         <div class="tradingview-widget-container">
-                        <div id="basic-area-chart"></div>
-                        <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-                        <script type="text/javascript">
-                        new TradingView.widget(
-                        {
-                        "container_id": "basic-area-chart",
-                        "width": 998,
-                        "height": 610,
-                        "symbol": "BTCUSD",
-                        "interval": "D",
-                        "timezone": "exchange",
-                        "theme": "light",
-                        "style": "3",
-                        "toolbar_bg": "#f1f3f6",
-                        "hide_top_toolbar": true,
-                        "save_image": false,
-                        "locale": "en"
-                        }
-                        );
-                        </script>
+                            <div id="basic-area-chart">
+                            </div>
                         </div>
 
                         <!-- <div class="container m-5">
@@ -332,8 +325,25 @@
             </div>
         </div>
     </div>
-
     <script src="js/script.js" type="text/javascript" defer></script>
+    <script type="text/javascript">
+        new TradingView.widget(
+            {
+                "container_id": "basic-area-chart",
+                "width": 998,
+                "height": 610,
+                "symbol": "BTCUSD",
+                "interval": "D",
+                "timezone": "exchange",
+                "theme": "light",
+                "style": "3",
+                "toolbar_bg": "#f1f3f6",
+                "hide_top_toolbar": true,
+                "save_image": false,
+                "locale": "en"
+            }
+        );
+    </script>
 </body>
 
 
