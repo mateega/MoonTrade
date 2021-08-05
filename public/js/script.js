@@ -488,10 +488,10 @@ const startSearch = () => {
                                 <p class="card-header-title ">
                                 $${getPrice(searchInput)}
                                 </p>
-                                <button class="card-header-icon button" aria-label="more options" onclick="buyEth('${searchInput}')">
+                                <button class="card-header-icon" aria-label="more options" onclick="buyEth('${searchInput}')">
                                 Buy
                                 </button>
-                                <button class="card-header-icon button" aria-label="more options" onclick="addCoin(${getPrice(searchInput)}, '${searchInput}')">
+                                <button class="card-header-icon" aria-label="more options" onclick="addCoin(${getPrice(searchInput)}, '${searchInput}')">
                                 Add
                                 </button>
                             </header>
