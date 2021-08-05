@@ -466,6 +466,7 @@ const startSearch = () => {
         const coinData = myjson[coinElement];
         const ticker = `${searchInput}USDT`;
         if (ticker === coinData.symbol){
+            displayAbout(searchInput);
             results.innerHTML += `<div class="card" onclick="displayAbout('${searchInput}')">
                             <header class="card-header">
                                 <p class="card-header-title ">
