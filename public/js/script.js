@@ -467,7 +467,7 @@ const startSearch = () => {
         const ticker = `${searchInput}USDT`;
         if (ticker === coinData.symbol){
             displayAbout(searchInput);
-            results.innerHTML += `<div class="card" onclick="displayAbout('${searchInput}')">
+            results.innerHTML += `<div class="card">
                             <header class="card-header">
                                 <p class="card-header-title ">
                                 ${searchInput}
@@ -475,10 +475,10 @@ const startSearch = () => {
                                 <p class="card-header-title ">
                                 $${getPrice(searchInput)}
                                 </p>
-                                <button class="card-header-icon" aria-label="more options" onclick="buyEth('${searchInput}')">
+                                <button class="card-header-icon button" aria-label="more options" onclick="buyEth('${searchInput}')">
                                 Buy
                                 </button>
-                                <button class="card-header-icon" aria-label="more options" onclick="addCoin(${getPrice(searchInput)}, '${searchInput}')">
+                                <button class="card-header-icon button" aria-label="more options" onclick="addCoin(${getPrice(searchInput)}, '${searchInput}')">
                                 Add
                                 </button>
                             </header>
@@ -511,12 +511,12 @@ const displayAbout = (coinName) => {
         const ticker = `${coinName}USDT`;
         if (ticker === coinData.symbol){
             name.innerHTML = `${coinName}`
-            ohl.innerHTML = `O/H/L: $${coinData.openPrice}/$${coinData.highPrice}/$${coinData.lowPrice}`
+            ohl.innerHTML = `O/H/L: $${usCurrencyFormat.format(coinData.openPrice)}/$${usCurrencyFormat.format(coinData.highPrice)}/$${usCurrencyFormat.format(coinData.lowPrice)}`
             vol.innerHTML = `Volume: ${coinData.volume}`
             quote.innerHTML = `Quote Volume: ${coinData.quoteVolume}`
-            change.innerHTML = `Price Change: $${coinData.priceChange}`
+            change.innerHTML = `Price Change: $${usCurrencyFormat.format(coinData.priceChange)}`
             percent.innerHTML = `Price Change Percent: ${coinData.priceChangePercent}%`
-            weight.innerHTML = `Weighted Average Price: $${coinData.weightedAvgPrice}`
+            weight.innerHTML = `Weighted Average Price: $${usCurrencyFormat.format(coinData.weightedAvgPrice)}`
         }
     }
     })
@@ -555,6 +555,10 @@ const displayWatch = () => {
         console.log(cards);
         watchId.innerHTML = cards;
     });
+};
+
+const addTopTenCoin = (coinName) => {
+    addCoin(getPrice(coinName), coinName);
 };
 
 //add to watchlist
