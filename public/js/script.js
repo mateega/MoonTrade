@@ -12,6 +12,9 @@ const modal = document.querySelector('#loadingModal');
 const closeModal = () => {
     modal.classList.toggle('is-active');
 }
+// modal.classList.toggle('is-active');
+// setTimeout(() => {   
+// }, 0050);
 
 // ----- GET PRICE OF A CRYPTO -------------------------------------------
 let wantedPrice = 0.0;
@@ -85,9 +88,10 @@ const sellPosition = (desiredPositionItem) => {
                         watch: false
                     })
                     updateInvested(); //update the amount invested number shown on screen
+                    modal.classList.toggle('is-active');
                 }
                 else if (amountSell == position.amount) {
-                    modal.classList.toggle('is-active');
+                    
                     // user wants to sell all
                     // firebase.database().ref(positionItem).remove();
                     const positionEdit = { //update old position
@@ -105,11 +109,12 @@ const sellPosition = (desiredPositionItem) => {
                         watch: false
                     })
                     updateInvested();
+                    modal.classList.toggle('is-active');
                 }
                 else {
+                    modal.classList.toggle('is-active');
                     // user has cancelled sell order
                 }
-                closeModal();
             }, 0050);
         }
     };
@@ -117,13 +122,13 @@ const sellPosition = (desiredPositionItem) => {
 
 // --------- CURRENT POSITIONS -------------------------------------------------------------------
 window.onload = (event) => {
+    console.log('hit');
     displayWatch();
     modal.classList.toggle('is-active');
     setTimeout(() => {
         getPositions(); //delay so porfolio can be valued at current crypto prices (takes a second to get this data)
         getSortedPositions();
     }, 2000);
-    // modal.classList.toggle('is-active');
 };
 
 let data = ``;
@@ -176,7 +181,6 @@ const renderDataAsHtml = (data) => {
             orderHistory += createOrder(position, positionItem) // For each position create an HTML card
         }
     };
-
     console.log(cards);
     document.querySelector('#app').innerHTML = cards;
     console.log(orderHistory);
@@ -254,7 +258,6 @@ const updateInvested = () => {
         data = snapshot.val();
         // console.log(data);
     });
-
     for (const positionItem in data) {
         const position = data[positionItem];
         if (position.status == "in") {
@@ -276,10 +279,9 @@ const updateInvested = () => {
 
     valueElement.innerText = (usCurrencyFormat.format((porfolioWorth + cash)));
     gainElement.innerText = (`${gainSymbol + usCurrencyFormat.format(gain)} (${gainSymbol + percentFormat.format(gain / 100000)}) Total`);
-
 }
 
-// ------ Pi Chart ---------------------
+// ------ Pi Chart -------------------------------------------------------------------------------------
 const createPieChart = (invested, cash) => {
     google.charts.load('current', { 'packages': ['corechart'] });
     google.charts.setOnLoadCallback(drawChart);
@@ -305,8 +307,6 @@ const buyEth = (coinName) => {
     console.log("running");
     const newAmount = parseFloat(buyAmount);
     const newPrice = getPrice(coinName);
-    // const oldAmount = parseFloat(position.amount);
-    // const oldPrice = parseFloat(position.price);
 
     console.log({
         price: newPrice,
@@ -317,61 +317,10 @@ const buyEth = (coinName) => {
         console.log("you already have a position in this crypto.");
         //update the current position
         updateCurrentPosition(newPrice, newAmount, coinName);
-
-        //     firebase.database().ref().push({
-        //         coin: coinName,
-        //         price: ((((oldPrice)*(oldAmount)) + (newPrice*newAmount))/(oldAmount + newAmount)),
-        //         amount: oldAmount + newAmount,
-        //         buyAmount: newAmount,
-        //         status: "in",
-        //         direction: "buy",
-        //         date: dateToday,
-        //         watch: false
-        //     })
-        //     firebase.database().ref(positionItem).update(positionEdit);
-
-        //    // user wants to sell part
-        //     const oldAmount = parseFloat(position.amount);
-        //     const positionEdit = {
-        //         coin: position.coin,
-        //         price: position.price,
-        //         amount: (oldAmount - amountSell),
-        //     }
-        //     firebase.database().ref(positionItem).update(positionEdit);
-        //     //create a new datapoint in firebase
-        //     firebase.database().ref().push({
-        //         coin: position.coin,
-        //         price: getPrice(position.coin),
-        //         buyAmount: position.buyAmount,
-        //         amount: amountSell,
-        //         status: "out",
-        //         direction: "sell",
-        //         date: dateToday,
-        //         watch: false
-        //     })
-
-
-
-
-
-
-
-
     }
     else {
         console.log("you are entering a new position.");
         console.log(tickers);
-        //create a new position in firebase
-        // firebase.database().ref().push({
-        //     coin: coinName,
-        //     price: coinPrice,
-        //     amount: lotSize,
-        //     buyAmount: lotSize,
-        //     status: "in",
-        //     direction: "buy",
-        //     date: dateToday,
-        //     watch: false
-        // })
         firebase.database().ref().push({
             coin: coinName,
             price: newPrice,
@@ -385,7 +334,6 @@ const buyEth = (coinName) => {
     }
     // updateInvested(); //update the amount invested number shown on screen
 }
-
 
 const updateCurrentPosition = (newPrice, newAmount, coinName) => {
     for (const positionItem in data) {
@@ -404,42 +352,6 @@ const updateCurrentPosition = (newPrice, newAmount, coinName) => {
         }
     }
 }
-// const updateCurrentPosition = (newPrice, newAmount, coinName) => {
-//     // let count = 0;
-//     const watchRef = firebase.database().ref();
-//     watchRef.on('value', (snapshot) => {
-//         data = snapshot.val();
-//         for(const positionItem in data) {
-//             const position = data[positionItem];
-//             let ticker = position.coin;
-//             console.log(ticker);
-//             if (ticker == coinName){
-//                 console.log("match");
-//                 const oldAmount = parseFloat(position.amount);
-//                 const oldPrice = parseFloat(position.price);
-//                 const positionEdit = {
-//                     price: ((((oldPrice)*(oldAmount)) + (newPrice*newAmount))/(oldAmount + newAmount)),
-//                     amount: oldAmount + newAmount,             
-//                 }
-//                 firebase.database().ref(positionItem).update(positionEdit);
-//             }
-//             //     console.log("you are creating a new orderhistory point.");
-//             //     // firebase.database().ref().push({
-//             //     //     coin: coinName,
-//             //     //     price: ((((oldPrice)*(oldAmount)) + (newPrice*newAmount))/(oldAmount + newAmount)),
-//             //     //     amount: oldAmount + newAmount,
-//             //     //     buyAmount: newAmount,
-//             //     //     status: "in",
-//             //     //     direction: "buy",
-//             //     //     date: dateToday,
-//             //     //     watch: false
-//             //     // })
-//             //     //firebase.database().ref(positionItem).update(positionEdit);
-
-
-//         }
-//     });
-// };
 
 const createOrderHistoryPoint = (newPrice, newAmount, coinName) => {
     const watchRef = firebase.database().ref();
@@ -463,8 +375,7 @@ const createOrderHistoryPoint = (newPrice, newAmount, coinName) => {
     });
 }
 
-// search function
-
+// -------- SEARCH FEATURES --------------------------------------------------------------------
 const startSearch = () => {
     const searchInput = document.querySelector('#search').value;
     let url = "https://api.binance.com/api/v1/ticker/24hr";
@@ -540,12 +451,12 @@ const displayAbout = (coinName) => {
                 const ticker = `${coinName}USDT`;
                 if (ticker === coinData.symbol) {
                     name.innerHTML = `${coinName}`
-                    ohl.innerHTML = `O/H/L: $${usCurrencyFormat.format(coinData.openPrice)}/$${usCurrencyFormat.format(coinData.highPrice)}/$${usCurrencyFormat.format(coinData.lowPrice)}`
+                    ohl.innerHTML = `O/H/L: ${usCurrencyFormat.format(coinData.openPrice)}/${usCurrencyFormat.format(coinData.highPrice)}/${usCurrencyFormat.format(coinData.lowPrice)}`
                     vol.innerHTML = `Volume: ${coinData.volume}`
                     quote.innerHTML = `Quote Volume: ${coinData.quoteVolume}`
-                    change.innerHTML = `Price Change: $${usCurrencyFormat.format(coinData.priceChange)}`
+                    change.innerHTML = `Price Change: ${usCurrencyFormat.format(coinData.priceChange)}`
                     percent.innerHTML = `Price Change Percent: ${coinData.priceChangePercent}%`
-                    weight.innerHTML = `Weighted Average Price: $${usCurrencyFormat.format(coinData.weightedAvgPrice)}`
+                    weight.innerHTML = `Weighted Average Price: ${usCurrencyFormat.format(coinData.weightedAvgPrice)}`
                 }
             }
         })
@@ -554,8 +465,9 @@ const displayAbout = (coinName) => {
         })
 }
 
-//display the watchlist
+// -------- DISPLAY WATCHLIST --------------------------------------------------------------------
 const displayWatch = () => {
+    console.log("hit here");
     const watchRef = firebase.database().ref('watched');
     watchRef.on('value', (snapshot) => {
         data = snapshot.val();
@@ -612,19 +524,41 @@ const addCoin = (coinPrice, coinName) => {
     });
 };
 
+// -------- DISPLAY TOP TEN --------------------------------------------------------------------
+
+let BTCgainSymbol = "";
+if (getPercentChange("BTC") >= 0) { BTCgainSymbol = "+"; }
+let ETHgainSymbol = "";
+if (getPercentChange("ETH") >= 0) { ETHgainSymbol = "+"; }
+let BNBgainSymbol = "";
+if (getPercentChange("BNB") >= 0) { BNBgainSymbol = "+"; }
+let ADAgainSymbol = "";
+if (getPercentChange("ADA") >= 0) { ADAgainSymbol = "+"; }
+let XRPgainSymbol = "";
+if (getPercentChange("XRP") >= 0) { XRPgainSymbol = "+"; }
+let USDCgainSymbol = "";
+if (getPercentChange("USDC") >= 0) { USDCgainSymbol = "+"; }
+let DOGEgainSymbol = "";
+if (getPercentChange("DOGE") >= 0) { DOGEgainSymbol = "+"; }
+let DOTgainSymbol = "";
+if (getPercentChange("DOT") >= 0) { DOTgainSymbol = "+"; }
+
+
+
+
 let BTCelement = document.getElementById("priceBTC");
-BTCelement.innerText = `${usCurrencyFormat.format(getPrice("BTC"))} (+${getPercentChange("BTC")}%)`;
+BTCelement.innerText = `${usCurrencyFormat.format(getPrice("BTC"))} (${BTCgainSymbol + getPercentChange("BTC")}%)`;
 let ETHelement = document.getElementById("priceETH");
-ETHelement.innerText = `${usCurrencyFormat.format(getPrice("ETH"))} (+${getPercentChange("ETH")}%)`;
+ETHelement.innerText = `${usCurrencyFormat.format(getPrice("ETH"))} (${ETHgainSymbol + getPercentChange("ETH")}%)`;
 let BNBelement = document.getElementById("priceBNB");
-BNBelement.innerText = `${usCurrencyFormat.format(getPrice("BNB"))} (+${getPercentChange("BNB")}%)`;
+BNBelement.innerText = `${usCurrencyFormat.format(getPrice("BNB"))} (${BNBgainSymbol + getPercentChange("BNB")}%)`;
 let ADAelement = document.getElementById("priceADA");
-ADAelement.innerText = `${usCurrencyFormat.format(getPrice("ADA"))} (+${getPercentChange("ADA")}%)`;
+ADAelement.innerText = `${usCurrencyFormat.format(getPrice("ADA"))} (${ADAgainSymbol + getPercentChange("ADA")}%)`;
 let XRPelement = document.getElementById("priceXRP");
-XRPelement.innerText = `${usCurrencyFormat.format(getPrice("XRP"))} (+${getPercentChange("XRP")}%)`;
+XRPelement.innerText = `${usCurrencyFormat.format(getPrice("XRP"))} (${XRPgainSymbol + getPercentChange("XRP")}%)`;
 let USDCelement = document.getElementById("priceUSDC");
-USDCelement.innerText = `${usCurrencyFormat.format(getPrice("USDC"))} (+${getPercentChange("USDC")}%)`;
+USDCelement.innerText = `${usCurrencyFormat.format(getPrice("USDC"))} (${USDCgainSymbol + getPercentChange("USDC")}%)`;
 let DOGEelement = document.getElementById("priceDOGE");
-DOGEelement.innerText = `${usCurrencyFormat.format(getPrice("DOGE"))} (+${getPercentChange("DOGE")}%)`;
+DOGEelement.innerText = `${usCurrencyFormat.format(getPrice("DOGE"))} (${DOGEgainSymbol + getPercentChange("DOGE")}%)`;
 let DOTelement = document.getElementById("priceDOT");
-DOTelement.innerText = `${usCurrencyFormat.format(getPrice("DOT"))} (+${getPercentChange("DOT")}%)`;
+DOTelement.innerText = `${usCurrencyFormat.format(getPrice("DOT"))} (${DOTgainSymbol + getPercentChange("DOT")}%)`;
